@@ -9,13 +9,10 @@ PACKAGE_NAME=wlanpi-linux-firmware
 DEB_PATH=debian/$(PACKAGE_NAME)
 
 %:
-	dh $@
+	dh $@ --with quilt
 
 override_dh_auto_install:
 	mkdir -p $(DEB_PATH)/lib/firmware/intel
-	cp $(PACKAGE_NAME)/iwlwifi* $(DEB_PATH)/lib/firmware
-	cp $(PACKAGE_NAME)/intel/itb* $(DEB_PATH)/lib/firmware/intel
+	cp iwlwifi* $(DEB_PATH)/lib/firmware/
+	cp intel/ibt* $(DEB_PATH)/lib/firmware/intel/
 	dh_auto_install
-
-override_dh_auto_test:
-	# Do nothing

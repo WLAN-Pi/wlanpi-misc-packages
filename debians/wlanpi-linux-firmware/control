@@ -2,7 +2,7 @@ Source: wlanpi-linux-firmware
 Section: non-free/kernel
 Priority: optional
 Maintainer: Daniel Finimundi <daniel@finimundi.com>
-Build-Depends: debhelper (>= 9)
+Build-Depends: debhelper (>= 9), quilt
 Vcs-Browser: https://github.com/WLAN-Pi/wlanpi-misc-packages
 Vcs-Git: https://github.com/WLAN-Pi/wlanpi-misc-packages.git
 
