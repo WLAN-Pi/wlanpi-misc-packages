@@ -147,7 +147,7 @@ Packaged ${package_name} version ${package_version}"
     done
 
     if [ "${BUILD_ALL}" == "1" ]; then
-        git commit -m "Release all packages\n${commit_msg}"
+        git commit -m "Release all packages" -m "${commit_msg}"
     fi
 }
 
