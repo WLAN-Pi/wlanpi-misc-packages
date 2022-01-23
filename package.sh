@@ -125,7 +125,7 @@ build_packages()
         if $(dpkg --compare-versions "${upstream_version}" gt "${package_version}"); then
             package_version="${upstream_version}wlanpi1"
         fi
-        echo "::set-output name=package-version::${DEB_PACKAGE}"
+        echo "::set-output name=package-version::${package_version}"
 
         current_version="$(cd ${package_path}; dpkg-parsechangelog --show-field Version)"
         if ! $(dpkg --compare-versions "${package_version}" gt "${current_version}"); then
