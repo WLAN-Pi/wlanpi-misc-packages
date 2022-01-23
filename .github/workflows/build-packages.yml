@@ -1,0 +1,48 @@
+name: Build kernel
+
+on:
+  # Allow manual runs of workflow from Actions tab
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: package ${{ matrix.package }}+${{ matrix.arch }}
+    runs-on: 'ubuntu-20.04'
+
+    strategy:
+      fail-fast: false
+      matrix:
+        package: [iw,wlanpi-linux-firmware]
+        arch: [armhf]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update -yqq
+          sudo apt-get install -yqq --no-install-recommends \
+                git bc bison flex libssl-dev make libc6-dev libncurses5-dev devscripts
+          sudo apt-get install -yqq --no-install-recommends \
+                crossbuild-essential-armhf crossbuild-essential-arm64
+
+      - name: Build package ${{ matrix.package }}
+        id: build-package
+        run: |
+          ./package.sh --arch=${{ matrix.arch }} --package=${{ matrix.package }}
+
+      - name: Upload package ${{ matrix.package }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ matrix.package }}-${{ matrix.arch }}-${{ steps.build-package.outputs.package-version }}
+          path: ${{ steps.build-package.outputs.deb-package }}
+
+      - name: Upload package to packagecloud
+        uses: danielmundi/upload-packagecloud@main
+        with:
+          package-name: ${{ steps.build-package.outputs.deb-package }}
+          packagecloud-username: wlanpi
+          packagecloud-repo: dev
+          packagecloud-distrib: raspbian/bullseye
+          packagecloud-token: ${{ secrets.PACKAGECLOUD_TOKEN }}

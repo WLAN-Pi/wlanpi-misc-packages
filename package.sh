@@ -125,6 +125,7 @@ build_packages()
         if $(dpkg --compare-versions "${upstream_version}" gt "${package_version}"); then
             package_version="${upstream_version}wlanpi1"
         fi
+        echo "::set-output name=package-version::${DEB_PACKAGE}"
 
         log "Using version ${package_version} for ${package_name}"
         (cd "${package_path}"; dch -v "${package_version}" -D bullseye --force-distribution "${package_name} version ${package_version}")
