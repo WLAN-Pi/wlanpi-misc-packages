@@ -94,7 +94,7 @@ build_packages()
 
     commit_msg=""
     for package_conf in "${SCRIPT_PATH}"/*.conf; do
-        unset package_name package_url package_ref package_version
+        unset package_name package_url package_ref package_version package_version_type
         source "${package_conf}"
 
         if [ "${BUILD_ALL}" != "1" ] && [ "${BUILD_PACKAGE}" != "${package_name}" ]; then
@@ -108,21 +108,25 @@ build_packages()
         package_path="${SCRIPT_PATH}/${package_name}"
         package_debian_path="${SCRIPT_PATH}/debians/${package_name}"
 
-        download_source "${package_url}" "${package_ref}" "${package_name}"
+        download_source "${package_url}" "${package_ref}" "${package_name}" "${package_version_type}"
 
         # Copy debian files to source dir
         mkdir -p "${package_path}/debian"
         rsync -aq "${package_debian_path}"/* "${package_path}"/debian/
 
-        commit_date="$(cd ${package_path}; git show -s --format=%ct HEAD)"
-        upstream_version="$(date -d "@$commit_date" -u +1.%Y%m%d)"
-        upstream_version="${upstream_version}-1wlanpi"
+        if [ "${package_version_type}" == "date" ]; then
+            commit_date="$(cd ${package_path}; git show -s --format=%ct HEAD)"
+            upstream_version="$(date -d "@$commit_date" -u +1.%Y%m%d)-1"
+        else
+            upstream_version="$(cd ${package_path}; git describe --tags)-1"
+        fi
+
         if $(dpkg --compare-versions "${upstream_version}" gt "${package_version}"); then
             package_version="${upstream_version}"
         fi
 
         log "Using version ${package_version} for ${package_name}"
-        (cd "${package_path}"; dch -v "${package_version}" -D bullseye --force-distribution "${package_name} version ${package_version}")
+        (cd "${package_path}"; dch -v "${package_version}" -lwlanpi -D bullseye --force-distribution "${package_name} version ${package_version}")
         cp "${package_path}/debian/changelog" "${package_debian_path}/changelog"
 
         git add "${package_debian_path}/changelog"
@@ -150,17 +154,24 @@ download_source()
     url="$1"
     ref="$2"
     target_package="$3"
+    shallow="$4"
     target_path="${SCRIPT_PATH}/${target_package}"
+
+    fetch_depth="--deptyh=1"
+    if [ "${shallow}" == "describe" ]; then
+        fetch_depth=""
+        unshallow="--unshallow"
+    fi
 
     if [ ! -d "${target_path}" ]; then
         log "ok" "Downloading ${target_package} source from ${url}, branch ${ref}"
-        git clone --depth=1 -b "${ref}" "${url}" "${target_path}"
+        git clone "${fetch_depth}" -b "${ref}" "${url}" "${target_path}"
     elif [ "${FORCE_SYNC}" == "1" ]; then
         log "ok" "Fetching new ${target_package} version on branch ${ref}"
         pushd "${target_path}" >/dev/null
 
         git remote set-branches origin "${ref}"
-        git fetch -q --depth 1 origin "${ref}"
+        git fetch -q "${fetch_depth}" "${unshallow}" origin "${ref}"
 
         if [ "${CLEAN_PACKAGE}" == "1" ]; then
             git reset --hard
