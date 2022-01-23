@@ -34,12 +34,14 @@ jobs:
 
       - name: Upload package ${{ matrix.package }}
         uses: actions/upload-artifact@v2
+        if: ${{ steps.build-package.outputs.deb-package != "" }}
         with:
           name: ${{ matrix.package }}-${{ matrix.arch }}-${{ steps.build-package.outputs.package-version }}
           path: ${{ steps.build-package.outputs.deb-package }}
 
       - name: Upload package to packagecloud
         uses: danielmundi/upload-packagecloud@main
+        if: ${{ steps.build-package.outputs.deb-package != "" }}
         with:
           package-name: ${{ steps.build-package.outputs.deb-package }}
           packagecloud-username: wlanpi

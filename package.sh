@@ -127,6 +127,12 @@ build_packages()
         fi
         echo "::set-output name=package-version::${DEB_PACKAGE}"
 
+        current_version="$(cd ${package_path}; dpkg-parsechangelog --show-field Version)"
+        if ! $(dpkg --compare-versions "${package_version}" gt "${current_version}"); then
+            log "warn" "Nothing to do. Trying to build same version as last already built."
+            continue
+        fi
+
         log "Using version ${package_version} for ${package_name}"
         (cd "${package_path}"; dch -v "${package_version}" -D bullseye --force-distribution "${package_name} version ${package_version}")
         cp "${package_path}/debian/changelog" "${package_debian_path}/changelog"
