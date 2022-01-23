@@ -1,0 +1,2 @@
+[submodule "sbuild-debian-package"]
+	branch = main

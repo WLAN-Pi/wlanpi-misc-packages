@@ -1,0 +1,5 @@
+*.deb
+*.dsc
+.*.swp
+*.build
+*.tar.gz

@@ -1,0 +1,16 @@
+Source: wlanpi-linux-firmware
+Section: non-free/kernel
+Priority: optional
+Maintainer: Daniel Finimundi <daniel@finimundi.com>
+Build-Depends: debhelper (>= 9)
+Vcs-Browser: https://github.com/WLAN-Pi/wlanpi-misc-packages
+Vcs-Git: https://github.com/WLAN-Pi/wlanpi-misc-packages.git
+
+Package: wlanpi-linux-firmware
+Architecture: all
+Provides: firmware-iwlwifi
+Depends: ${misc:Depends}
+Suggests: initramfs-tools
+Replaces: firmware-iwlwifi
+Description: Binary firmware for Intel Wireless cards
+ Packaged by WLAN Pi team with latest updates from master.

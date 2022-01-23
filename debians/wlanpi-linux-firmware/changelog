@@ -1,0 +1,5 @@
+wlanpi-linux-firmware (0.1-1wlanpi) bullseye; urgency=medium
+
+  * Initial release.
+
+ -- Daniel Finimundi <daniel@finimundi.com>  Sat, 22 Jan 2022 03:03:19 +0000
