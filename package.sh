@@ -159,21 +159,21 @@ download_source()
     shallow="$4"
     target_path="${SCRIPT_PATH}/${target_package}"
 
-    fetch_depth="--deptyh=1"
+    fetch_depth="--depth=1"
     if [ "${shallow}" == "describe" ]; then
-        fetch_depth=""
+        unset fetch_depth
         unshallow="--unshallow"
     fi
 
     if [ ! -d "${target_path}" ]; then
         log "ok" "Downloading ${target_package} source from ${url}, branch ${ref}"
-        git clone "${fetch_depth}" -b "${ref}" "${url}" "${target_path}"
+        git clone ${fetch_depth} -b "${ref}" "${url}" "${target_path}"
     elif [ "${FORCE_SYNC}" == "1" ]; then
         log "ok" "Fetching new ${target_package} version on branch ${ref}"
         pushd "${target_path}" >/dev/null
 
         git remote set-branches origin "${ref}"
-        git fetch -q "${fetch_depth}" "${unshallow}" origin "${ref}"
+        git fetch -q ${fetch_depth} ${unshallow} origin "${ref}"
 
         if [ "${CLEAN_PACKAGE}" == "1" ]; then
             git reset --hard
