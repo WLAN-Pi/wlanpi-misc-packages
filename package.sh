@@ -118,15 +118,16 @@ build_packages()
             commit_date="$(cd ${package_path}; git show -s --format=%ct HEAD)"
             upstream_version="$(date -d "@$commit_date" -u +1.%Y%m%d)-1"
         else
-            upstream_version="$(cd ${package_path}; git describe --tags)-1"
+            upstream_version="$(cd ${package_path}; git describe --tags)"
+            upstream_version="$(echo "${upstream_version}" | sed 's/^[a-zA-Z-]*//' | tr '-' '.')-1"
         fi
 
         if $(dpkg --compare-versions "${upstream_version}" gt "${package_version}"); then
-            package_version="${upstream_version}"
+            package_version="${upstream_version}wlanpi1"
         fi
 
         log "Using version ${package_version} for ${package_name}"
-        (cd "${package_path}"; dch -v "${package_version}" -lwlanpi -D bullseye --force-distribution "${package_name} version ${package_version}")
+        (cd "${package_path}"; dch -v "${package_version}" -D bullseye --force-distribution "${package_name} version ${package_version}")
         cp "${package_path}/debian/changelog" "${package_debian_path}/changelog"
 
         git add "${package_debian_path}/changelog"
