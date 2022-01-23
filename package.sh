@@ -65,7 +65,7 @@ process_options()
                 ;;
             -a | --all )
                 BUILD_ALL="1"
-                shift 2
+                shift 1
                 ;;
             --package )
                 BUILD_PACKAGE="$2"
