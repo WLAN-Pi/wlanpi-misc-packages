@@ -3,3 +3,4 @@
 .*.swp
 *.build
 *.tar.gz
+*.tar.xz
