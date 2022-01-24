@@ -147,6 +147,7 @@ build_packages()
             cd "${package_path}"
             git archive --format=tar HEAD | xz -T0 > "../${package_name}_${package_version%-*}.orig.tar.xz"
             INPUTS_ARCH=${BUILD_ARCH} INPUTS_DISTRO="bullseye" INPUTS_RUN_LINTIAN="false" "${SCRIPT_PATH}"/sbuild-debian-package/build.sh
+            cp *.deb "${SCRIPT_PATH}"
         )
     done
 
