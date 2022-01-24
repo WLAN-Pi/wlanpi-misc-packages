@@ -4,6 +4,6 @@
 *.build
 *.tar.gz
 *.tar.xz
-iw
-wlanpi-linux-firmware
+/iw
+/wlanpi-linux-firmware
 commit_msg.txt
