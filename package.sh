@@ -6,6 +6,7 @@ VALID_ARGS=$?
 SCRIPT_PATH="$(dirname $(readlink -f "$0"))"
 CACHE_PATH="${SCRIPT_PATH}/source"
 LOG_PATH="${SCRIPT_PATH}/logs"
+COMMIT_MSG_FILE="${SCRIPT_PATH}/commit_msg.txt"
 
 BUILD_ARCH="armhf"
 CLEAN_PACKAGE="0"
@@ -92,7 +93,8 @@ build_packages()
     log "ok" "Syncing sbuild submodule"
     git submodule update --init --recursive
 
-    commit_msg=""
+    echo "" > "${COMMIT_MSG_FILE}"
+
     for package_conf in "${SCRIPT_PATH}"/*.conf; do
         unset package_name package_url package_ref package_version package_version_type
         source "${package_conf}"
@@ -138,12 +140,7 @@ build_packages()
         cp "${package_path}/debian/changelog" "${package_debian_path}/changelog"
 
         git add "${package_debian_path}/changelog"
-        commit_msg="${commit_msg}
-Packaged ${package_name} version ${package_version}"
-
-        if [ "${BUILD_ALL}" != "1" ]; then
-            git commit -m "Release ${package_name} version ${package_version}" -m "${commit_msg}"
-        fi
+        echo "Packaged ${package_name} version ${package_version}" >> "${COMMIT_MSG_FILE}"
 
         log "ok" "Build Debian package for (${BUILD_ARCH})"
         (
@@ -153,9 +150,21 @@ Packaged ${package_name} version ${package_version}"
         )
     done
 
+    git_commit
+}
+
+git_commit()
+{
+    git config --local user.email "${DEBEMAIL}"
+    git config --local user.name "${DEBFULLNAME}"
+
     if [ "${BUILD_ALL}" == "1" ]; then
-        git commit -m "Release all packages" -m "${commit_msg}"
+        sed -i "1s/^/Release all packages\n\n/" "${COMMIT_MSG_FILE}"
+    else
+        sed -i "1s/^/Release ${BUILD_PACKAGE}\n\n/" "${COMMIT_MSG_FILE}"
     fi
+
+    git commit -F "${COMMIT_MSG_FILE}"
 }
 
 download_source()
