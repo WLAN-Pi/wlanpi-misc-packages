@@ -96,7 +96,7 @@ build_packages()
     echo "" > "${COMMIT_MSG_FILE}"
 
     for package_conf in "${SCRIPT_PATH}"/*.conf; do
-        unset package_name package_url package_ref package_version package_version_type
+        unset package_name package_url package_ref package_version package_version_type package_version_prefix get_version
         source "${package_conf}"
 
         if [ "${BUILD_ALL}" != "1" ] && [ "${BUILD_PACKAGE}" != "${package_name}" ]; then
@@ -127,6 +127,7 @@ build_packages()
         if $(dpkg --compare-versions "${upstream_version}" gt "${package_version}"); then
             package_version="${upstream_version}wlanpi1"
         fi
+        package_version="${package_version_prefix}${package_version}"
         echo "::set-output name=package-version::${package_version}"
 
         current_version="$(cd ${package_path}; dpkg-parsechangelog --show-field Version)"
