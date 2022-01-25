@@ -121,7 +121,7 @@ build_packages()
             upstream_version="$(date -d "@$commit_date" -u +1.%Y%m%d)-1"
         else
             upstream_version="$(cd ${package_path}; git describe --tags)"
-            upstream_version="$(echo "${upstream_version}" | sed 's/^[a-zA-Z-]*//' | tr '-' '.')-1"
+            upstream_version="$(echo "${upstream_version}" | sed 's/^[_a-zA-Z-]*//' | tr '-' '.' | tr '_' '.')-1"
         fi
 
         if $(dpkg --compare-versions "${upstream_version}" gt "${package_version}"); then
