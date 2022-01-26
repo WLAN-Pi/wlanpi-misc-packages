@@ -146,7 +146,9 @@ build_packages()
         log "ok" "Build Debian package for (${BUILD_ARCH})"
         (
             cd "${package_path}"
-            git archive --format=tar HEAD | xz -T0 > "../${package_name}_${package_version%-*}.orig.tar.xz"
+            tar_version=${package_version%-*}
+            tar_version=${tar_version#*:}
+            git archive --format=tar HEAD | xz -T0 > "../${package_name}_${tar_version}.orig.tar.xz"
             INPUTS_ARCH=${BUILD_ARCH} INPUTS_DISTRO="bullseye" INPUTS_RUN_LINTIAN="false" "${SCRIPT_PATH}"/sbuild-debian-package/build.sh
             cp *.deb "${SCRIPT_PATH}"
         )
