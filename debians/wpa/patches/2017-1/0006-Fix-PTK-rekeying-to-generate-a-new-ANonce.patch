@@ -1,0 +1,19 @@
+From 042e6221680909668f2af7e3be56ae0ff8b03c72 Mon Sep 17 00:00:00 2001
+From: Jouni Malinen <j@w1.fi>
+Date: Sun, 1 Oct 2017 12:32:57 +0300
+Subject: [PATCH 06/12] Fix PTK rekeying to generate a new ANonce
+
+The Authenticator state machine path for PTK rekeying ended up bypassing
+the AUTHENTICATION2 state where a new ANonce is generated when going
+directly to the PTKSTART state since there is no need to try to
+determine the PMK again in such a case. This is far from ideal since the
+new PTK would depend on a new nonce only from the supplicant.
+
+Fix this by generating a new ANonce when moving to the PTKSTART state
+for the purpose of starting new 4-way handshake to rekey PTK.
+
+Signed-off-by: Jouni Malinen <j@w1.fi>
+---
+ src/ap/wpa_auth.c | 24 +++++++++++++++++++++---
+ 1 file changed, 21 insertions(+), 3 deletions(-)
+

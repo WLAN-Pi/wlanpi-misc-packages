@@ -1,0 +1,19 @@
+02_dbus_group_policy.patch
+06_wpa_gui_menu_exec_path.patch
+07_dbus_service_syslog.patch
+12_wpa_gui_knotify_support.patch
+2015-3/0001-AP-WMM-Fix-integer-underflow-in-WMM-Action-frame-par.patch
+networkd-driver-fallback.patch
+2016-1/0005-Reject-SET-commands-with-newline-characters-in-the-s.patch
+do_not_wait_for_monitor_to_attach_if_no_control_interface.patch
+# already applied in 2015-6/backported-WNM-Ignore-Key-Data-in-WNM-Sleep-Mode-Response-frame.patch
+# 2017-1/0008-WNM-Ignore-Key-Data-in-WNM-Sleep-Mode-Response-frame.patch
+
+
+
+2019-4/0001-Add-crypto_ec_point_cmp.patch
+2019-4/0012-EAP-pwd-server-Detect-reflection-attacks.patch
+
+
+
+CVE-2021-27803.patch
