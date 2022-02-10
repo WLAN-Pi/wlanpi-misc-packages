@@ -12,6 +12,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        distro: [bullseye]
         package: [iw,wlanpi-linux-firmware]
         arch: [armhf,arm64]
 
