@@ -161,9 +161,13 @@ build_packages()
             INPUTS_ARCH=${BUILD_ARCH} INPUTS_DISTRO="bullseye" INPUTS_RUN_LINTIAN="false" "${SCRIPT_PATH}"/sbuild-debian-package/build.sh
             cp *.deb "${SCRIPT_PATH}"
         )
+        package_built="1"
     done
 
-    git_commit
+    # Only commit if we actually built something
+    if [ "${package_built}" == "1"]; then
+        git_commit
+    fi
 }
 
 git_commit()
