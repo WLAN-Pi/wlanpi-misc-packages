@@ -45,7 +45,7 @@ jobs:
         if: matrix.arch == 'armhf'
         uses: danielmundi/upload-packagecloud@main
         with:
-          package-name: ${{ steps.build-debian-package.outputs.deb-package }}
+          package-name: ${{ steps.build-package.outputs.deb-package }}
           packagecloud-username: wlanpi
           packagecloud-repo: dev
           packagecloud-distrib: raspbian/${{ matrix.distro }}
@@ -55,7 +55,7 @@ jobs:
         if: matrix.arch == 'arm64'
         uses: danielmundi/upload-packagecloud@main
         with:
-          package-name: ${{ steps.build-debian-package.outputs.deb-package }}
+          package-name: ${{ steps.build-package.outputs.deb-package }}
           packagecloud-username: wlanpi
           packagecloud-repo: dev
           packagecloud-distrib: debian/${{ matrix.distro }}
