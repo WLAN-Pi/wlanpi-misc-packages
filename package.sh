@@ -118,22 +118,34 @@ build_packages()
 
         if [ "${package_version_type}" == "date" ]; then
             commit_date="$(cd ${package_path}; git show -s --format=%ct HEAD)"
-            upstream_version="$(date -d "@$commit_date" -u +1.%Y%m%d)-1"
+            upstream_version="$(date -d "@$commit_date" -u +1.%Y%m%d)"
         else
             upstream_version="$(cd ${package_path}; git describe --tags)"
-            upstream_version="$(echo "${upstream_version}" | sed 's/^[a-zA-Z-]*//' | tr '-' '.')-1"
+            upstream_version="$(echo "${upstream_version}" | sed 's/^[a-zA-Z-]*//' | tr '-' '.')"
         fi
 
         if $(dpkg --compare-versions "${upstream_version}" gt "${package_version}"); then
-            package_version="${upstream_version}wlanpi1"
+            package_version="${upstream_version}"
         fi
-        echo "::set-output name=package-version::${package_version}"
 
+        # Get upstream version. E.g. version 1.2.3-4wlanpi1 will be 1.2.3
         current_version="$(cd ${package_path}; dpkg-parsechangelog --show-field Version)"
-        if ! $(dpkg --compare-versions "${package_version}" gt "${current_version}"); then
-            log "warn" "Nothing to do. Trying to build same version as last already built."
+        current_upstream_version=${current_version%%-*}
+        
+        # Debian build version. E.g. 1.2.3-4wlanpi1 will be 4
+        current_deb_version=${current_version%-*}
+        current_deb_version=${current_deb_version#*-}
+  
+        deb_version="1"
+        if ! $(dpkg --compare-versions "${package_version}" gt "${current_upstream_version}"); then
+            log "warn" "Upstream version is the same as last built. Incrementing debian build number."
+            deb_version=$((current_deb_version+1))
+        elif $(dpkg --compare-versions "${package_version}" lt "${current_upstream_version}"); then
+            log "warn" "Trying to build an old version of upstream source. Please check version information. Skipping build."
             continue
         fi
+        package_version="${package_version}-${deb_version}wlanpi1"
+        echo "::set-output name=package-version::${package_version}"
 
         log "Using version ${package_version} for ${package_name}"
         (cd "${package_path}"; dch -v "${package_version}" -D bullseye --force-distribution "${package_name} version ${package_version}")
