@@ -133,11 +133,11 @@ build_packages()
         current_upstream_version=${current_version%%-*}
         
         # Debian build version. E.g. 1.2.3-4wlanpi1 will be 4
-        current_deb_version=${current_version%-*}
+        current_deb_version=${current_version%wlanpi*}
         current_deb_version=${current_deb_version#*-}
   
         deb_version="1"
-        if ! $(dpkg --compare-versions "${package_version}" gt "${current_upstream_version}"); then
+        if $(dpkg --compare-versions "${package_version}" eq "${current_upstream_version}"); then
             log "warn" "Upstream version is the same as last built. Incrementing debian build number."
             deb_version=$((current_deb_version+1))
         elif $(dpkg --compare-versions "${package_version}" lt "${current_upstream_version}"); then
