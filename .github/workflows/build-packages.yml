@@ -17,7 +17,6 @@ on:
 jobs:
   build:
     name: package ${{ matrix.package }}+${{ matrix.arch }}
-    if: github.event.input.packages == 'all' && github.event.input.packages == matrix.package
     runs-on: 'ubuntu-20.04'
 
     strategy:
