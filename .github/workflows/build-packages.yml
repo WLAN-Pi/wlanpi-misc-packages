@@ -7,18 +7,24 @@ on:
       packages:
         description: Packages to build
         required: true
-        default: iw,wlanpi-linux-firmware
+        type: choice
+        options:
+          - all
+          - iw
+          - wlanpi-linux-firmware
+        default: all
 
 jobs:
   build:
     name: package ${{ matrix.package }}+${{ matrix.arch }}
+    if: github.event.input.packages == all && github.event.input.packages == matrix.package
     runs-on: 'ubuntu-20.04'
 
     strategy:
       fail-fast: false
       matrix:
         distro: [bullseye]
-        package: [${{ github.event.input.packages }}]
+        package: [iw,wlanpi-linux-firmware]
         arch: [armhf,arm64]
 
     steps:
