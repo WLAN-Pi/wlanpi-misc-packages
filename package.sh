@@ -165,7 +165,7 @@ build_packages()
     done
 
     # Only commit if we actually built something
-    if [ "${package_built}" == "1"]; then
+    if [ "${package_built}" == "1" ]; then
         git_commit
     fi
 }
