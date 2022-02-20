@@ -15,4 +15,5 @@ override_dh_auto_install:
 	mkdir -p $(DEB_PATH)/lib/firmware/intel
 	cp iwlwifi* $(DEB_PATH)/lib/firmware/
 	cp intel/ibt* $(DEB_PATH)/lib/firmware/intel/
+	install -o root -g root -m 644 $(DEB_PATH)/iwlwifi.conf $(DEB_PATH)/etc/modprobe.d/
 	dh_auto_install
