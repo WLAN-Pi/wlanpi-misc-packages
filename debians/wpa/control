@@ -8,8 +8,7 @@ Section: net
 Priority: optional
 Build-Depends: debhelper (>> 9.20120115),
  libdbus-1-dev,
- libssl1.0-dev,
- libqt4-dev,
+ libssl-dev,
  libncurses5-dev,
  libpcsclite-dev,
  libnl-3-dev [linux-any],
@@ -19,7 +18,6 @@ Build-Depends: debhelper (>> 9.20120115),
  libbsd-dev [kfreebsd-any],
  libreadline-dev,
  pkg-config,
- qt4-qmake,
  docbook-to-man,
  docbook-utils
 Standards-Version: 3.9.6

@@ -24,9 +24,9 @@ Signed-off-by: Jouni Malinen <j@w1.fi>
 
 --- a/src/ap/wmm.c
 +++ b/src/ap/wmm.c
-@@ -274,6 +274,9 @@ void hostapd_wmm_action(struct hostapd_d
- 		return;
- 	}
+@@ -342,6 +342,9 @@
+ 	if (left < 0)
+ 		return; /* not a valid WMM Action frame */
  
 +	if (left < 0)
 +		return; /* not a valid WMM Action frame */
