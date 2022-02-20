@@ -14,7 +14,7 @@ DEB_PATH=debian/$(PACKAGE_NAME)
 override_dh_auto_install:
 	mkdir -p \
 		$(DEB_PATH)/lib/firmware/intel \
-		debian/etc/modprobe.d
+		$(DEB_PATH)/etc/modprobe.d
 	cp iwlwifi* $(DEB_PATH)/lib/firmware/
 	cp intel/ibt* $(DEB_PATH)/lib/firmware/intel/
 	install -o root -g root -m 644 debian/iwlwifi.conf $(DEB_PATH)/etc/modprobe.d/
