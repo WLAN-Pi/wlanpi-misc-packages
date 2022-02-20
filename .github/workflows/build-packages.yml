@@ -3,6 +3,11 @@ name: Build misc packages
 on:
   # Allow manual runs of workflow from Actions tab
   workflow_dispatch:
+    inputs:
+      packages:
+        description: Packages to build
+        required: true
+        default: iw,wlanpi-linux-firmware
 
 jobs:
   build:
@@ -13,7 +18,7 @@ jobs:
       fail-fast: false
       matrix:
         distro: [bullseye]
-        package: [iw,wlanpi-linux-firmware]
+        package: [${{ github.event.input.packages }}]
         arch: [armhf,arm64]
 
     steps:
