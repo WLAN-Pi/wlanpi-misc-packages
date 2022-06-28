@@ -32,6 +32,7 @@ jobs:
 
       - name: Install dependencies
         run: |
+          sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 0E98404D386FA1D9
           sudo apt-get update -yqq
           sudo apt-get install -yqq --no-install-recommends \
                 git bc bison flex libssl-dev make libc6-dev libncurses5-dev devscripts \
