@@ -1,3 +1,9 @@
+iw (5.19-1wlanpi1) bullseye; urgency=medium
+
+  * iw version 5.19-1wlanpi1
+
+ -- Daniel Finimundi <daniel@finimundi.com>  Tue, 28 Jun 2022 11:24:27 +0000
+
 iw (5.16.2.g5909e73-4wlanpi1) bullseye; urgency=medium
 
   * iw version 5.16.2.g5909e73-4wlanpi1
