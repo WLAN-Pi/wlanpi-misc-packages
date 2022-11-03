@@ -17,7 +17,7 @@ on:
 jobs:
   build:
     name: package ${{ matrix.package }}+${{ matrix.arch }}
-    runs-on: 'ubuntu-20.04'
+    runs-on: 'ubuntu-22.04'
 
     strategy:
       fail-fast: false
@@ -28,7 +28,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Install dependencies
         run: |
@@ -45,7 +45,7 @@ jobs:
           ./package.sh --arch=${{ matrix.arch }} --package=${{ matrix.package }}
 
       - name: Upload package ${{ matrix.package }}
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         if: ${{ steps.build-package.outputs.deb-package != '' }}
         with:
           name: ${{ matrix.package }}-${{ matrix.arch }}-${{ steps.build-package.outputs.package-version }}
@@ -89,7 +89,7 @@ jobs:
     name: Post Workflow Status to Slack
     needs:
       - build
-    runs-on: 'ubuntu-20.04'
+    runs-on: 'ubuntu-22.04'
     steps:
       - name: Slack Workflow Notification
         uses: Gamesight/slack-workflow-status@master
