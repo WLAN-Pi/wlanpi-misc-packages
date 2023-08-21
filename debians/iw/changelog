@@ -1,3 +1,9 @@
+iw (5.19.16.gf2d9f5b-1wlanpi1) bullseye; urgency=medium
+
+  * iw version 5.19.16.gf2d9f5b-1wlanpi1
+
+ -- Daniel Finimundi <daniel@finimundi.com>  Mon, 21 Aug 2023 20:48:03 +0000
+
 iw (5.19-2wlanpi1) bullseye; urgency=medium
 
   * iw version 5.19-2wlanpi1
