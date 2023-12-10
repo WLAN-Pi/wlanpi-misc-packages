@@ -14,5 +14,5 @@ We are just copying the desired files for WLAN Pi.
 -	@./check_whence.py
 -
 -install:
--	install -d $(DESTDIR)$(FIRMWAREDIR)
+-	mkdir -p $(DESTDIR)$(FIRMWAREDIR)
 -	./copy-firmware.sh $(DESTDIR)$(FIRMWAREDIR)
