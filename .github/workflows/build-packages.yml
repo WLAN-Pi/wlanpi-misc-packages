@@ -11,6 +11,7 @@ on:
         options:
           - all
           - iw
+	  - wavemon
           - wlanpi-linux-firmware
         default: all
 
@@ -23,7 +24,7 @@ jobs:
       fail-fast: false
       matrix:
         distro: [bullseye,bookworm]
-        package: [iw,wlanpi-linux-firmware]
+        package: [iw,wavemon,wlanpi-linux-firmware]
         arch: [arm64]
 
     steps:
