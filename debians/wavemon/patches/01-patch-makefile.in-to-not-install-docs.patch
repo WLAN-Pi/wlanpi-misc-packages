@@ -1,0 +1,31 @@
+From: Jonathan McCrohan <jmccrohan@gmail.com>
+Date: Sun, 23 Mar 2014 01:02:44 +0000
+Subject: Patch Makefile.in to not install docs; install using dh instead
+
+diff --git a/Makefile.in b/Makefile.in
+index c9ecc37..d790ccd 100644
+--- a/Makefile.in
++++ b/Makefile.in
+@@ -22,7 +22,6 @@ MAIN	= @PACKAGE_NAME@.c
+ HEADERS	= $(wildcard *.h)
+ PURESRC	= $(filter-out $(MAIN),$(sort $(wildcard *.c)))
+ OBJS	= $(PURESRC:.c=.o)
+-DOCS	= README.md NEWS THANKS AUTHORS COPYING ChangeLog
+ 
+ %.o: %.c $(HEADERS)
+ 	@echo ' CC  ' $<
+@@ -50,13 +49,11 @@ install-suid-root install-binaries: all
+ 	$(INSTALL) -m 0755 -d $(DESTDIR)$(bindir)
+ 	$(INSTALL) -m $(exec_perms) @PACKAGE_NAME@ $(DESTDIR)$(bindir)
+ 
+-install-docs: @PACKAGE_NAME@.1 @PACKAGE_NAME@rc.5 $(DOCS)
++install-docs: @PACKAGE_NAME@.1 @PACKAGE_NAME@rc.5
+ 	$(INSTALL) -m 0755 -d $(DESTDIR)$(mandir)/man1
+ 	$(INSTALL) -m 0644 @PACKAGE_NAME@.1 $(DESTDIR)$(mandir)/man1
+ 	$(INSTALL) -m 0755 -d $(DESTDIR)$(mandir)/man5
+ 	$(INSTALL) -m 0644 @PACKAGE_NAME@rc.5 $(DESTDIR)$(mandir)/man5
+-	$(INSTALL) -m 0755 -d $(DESTDIR)$(datadir)
+-	$(INSTALL) -m 0644 $(DOCS) $(DESTDIR)$(datadir)
+ 
+ uninstall:
+ 	@$(RM) $(bindir)/@PACKAGE_NAME@

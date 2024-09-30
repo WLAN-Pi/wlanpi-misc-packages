@@ -1,0 +1,291 @@
+wavemon (0.9.1-1) unstable; urgency=medium
+
+  * New upstream release
+  * d/compat: drop file in favour of Build-Dep
+    - Build-Depend on debhelper-compat (= 13) instead
+  * d/control: bump Standards-Version to 4.5.0
+    - Add Rules-Requires-Root: no
+  * d/rules: Migrate from dpkg-parsechangelog to
+    /usr/share/dpkg/pkg-info.mk
+
+ -- Jonathan McCrohan <jmccrohan@gmail.com>  Thu, 30 Jul 2020 00:44:51 +0100
+
+wavemon (0.8.2-1) unstable; urgency=medium
+
+  * New upstream release (Closes: #825544)
+  * d/control: update homepage to reflect move to github (Closes: #794535)
+  * d/changelog: remove trailing spaces
+  * d/compat: bump to dh compat level to 11
+  * d/control: bump Standards-Version to 4.0.1
+    - Change Priority from Extra to Optional
+  * d/control: remove autotools-dev as a dependency
+  * d/patches: refresh patches
+  * d/patches: add patch from Helmut Grohne to fix FTCBFS (Closes: #852784)
+
+ -- Jonathan McCrohan <jmccrohan@gmail.com>  Sat, 07 Apr 2018 19:16:24 +0100
+
+wavemon (0.8.1-1) unstable; urgency=medium
+
+  * New upstream release
+  * d/control: bump Standards-Version to 3.9.8
+    - No changes required
+
+ -- Jonathan McCrohan <jmccrohan@gmail.com>  Mon, 02 Jan 2017 23:02:03 +0000
+
+wavemon (0.8.0-1) unstable; urgency=medium
+
+  * New upstream release
+    - Majority of WEXT functions now replaced by nl80211
+    - Updated scan and info screens
+    - Drop random signals functionality
+  * d/watch: upstream has moved to github; update accordingly
+  * d/patches:
+    - refresh 01-patch-makefile.in-to-not-install-docs.patch
+    - drop 02-patch-configure.ac-to-allow-external-build_date.patch; applied
+      upstream
+  * d/control: add Build-Dep on libnl-3-dev, libnl-genl-3-dev, and pkg-config
+  * d/rules: add libnl includes path to DEB_CFLAGS_MAINT_APPEND
+  * d/rules: add PIE and full RELRO hardening options (hardening=+all)
+  * d/wavemon.docs: 's/README/&.md/' (upstream has moved to Github)
+
+ -- Jonathan McCrohan <jmccrohan@gmail.com>  Sat, 13 Feb 2016 18:07:20 +0000
+
+wavemon (0.7.6-4) unstable; urgency=medium
+
+  * Upload to unstable because Jessie is now stable. \o/
+
+ -- Jonathan McCrohan <jmccrohan@gmail.com>  Sun, 26 Apr 2015 00:26:12 +0100
+
+wavemon (0.7.6-3) experimental; urgency=medium
+
+  * Jessie still frozen, upload to experimental
+  * Add support for reproducible builds
+    - d/patches: Added
+       02-patch-configure.ac-to-allow-external-build_date.patch (sent and
+       accepted upstream)
+    - d/rules: parse and export BUILD_DATE from changelog entry
+  * d/control: bump Standards-Version to 3.9.6
+    - No changes required
+
+ -- Jonathan McCrohan <jmccrohan@gmail.com>  Sun, 15 Mar 2015 19:39:15 +0000
+
+wavemon (0.7.6-2) unstable; urgency=medium
+
+  * d/patches: Drop 01-remove-extra-copyright-file.patch; replace with
+    01-patch-makefile.in-to-not-install-docs.patch
+    - Add d/wavemon.docs to manually install docs (Closes: #736932)
+  * d/{control,rules}: Switch from dh-autoreconf to autotools-dev
+    - Fixes FTBFS on Ubuntu arm64
+
+ -- Jonathan McCrohan <jmccrohan@gmail.com>  Sun, 23 Mar 2014 01:17:05 +0000
+
+wavemon (0.7.6-1) unstable; urgency=low
+
+  * New upstream release
+    - Redesign scan window to fix bug (discovered as result of ncurses
+      changes)
+    - See NEWS file for rest of changes
+  * Remove DMUA flag from d/control; DM upload granted as per
+    https://lists.debian.org/debian-devel-announce/2012/09/msg00008.html
+  * d/control: update homepage URL
+  * d/control: bump Standards-Version to 3.9.5
+    - No changes required
+  * d/patches: Drop 01-Allow-buildflags-to-be-overridden.patch; applied
+    upstream, rename 02-remove-extra-copyright-file.patch as
+    01-remove-extra-copyright-file.patch
+  * d/control: Build-Depends on dh-autoreconf rather than autotools-dev
+  * d/rules: Use DEB_CFLAGS_MAINT_APPEND to ensure -pthread is always passed
+    to CFLAGS
+
+ -- Jonathan McCrohan <jmccrohan@gmail.com>  Tue, 28 Jan 2014 00:05:25 +0000
+
+wavemon (0.7.5-3) unstable; urgency=low
+
+  [ Jonathan McCrohan ]
+  * Remove 01-pass-cppflags-and-ldflags-to-compiler.patch and replace with
+    upstream commit eeaf804 as 01-Allow-buildflags-to-be-overridden.patch
+    - allows hardened CFLAGS, which were previously missing
+
+  [ Nicholas Breen ]
+  * Set DM-Upload-Allowed flag.
+
+ -- Jonathan McCrohan <jmccrohan@gmail.com>  Fri, 29 Jun 2012 07:44:46 +0100
+
+wavemon (0.7.5-2) unstable; urgency=low
+
+  * Mark as linux-any to save CPU cycles on KFreeBSD/Hurd buildds
+  * Bump debhelper to v9
+  * Added 01-pass-cppflags-and-ldflags-to-compiler.patch to enable build
+    hardening
+
+ -- Jonathan McCrohan <jmccrohan@gmail.com>  Sun, 10 Jun 2012 01:42:32 +0100
+
+wavemon (0.7.5-1) unstable; urgency=low
+
+  * New upstream release
+    - Adds alternate [F1-F10] keyboard shortcuts (LP: #725036)
+
+ -- Jonathan McCrohan <jmccrohan@gmail.com>  Sun, 06 May 2012 21:26:25 +0100
+
+wavemon (0.7.4-1) unstable; urgency=low
+
+  * New upstream release
+     - Depreciate use of /proc/net/wireless (closes: #576655)
+  * Drop patch 02-fix-wavemonrc.5-man-errors.patch, applied upstream
+  * Update S-V to 3.9.3
+
+ -- Jonathan McCrohan <jmccrohan@gmail.com>  Tue, 06 Mar 2012 00:35:39 +0000
+
+wavemon (0.7.3-1) unstable; urgency=low
+
+  * New upstream release
+     - Allows window to be resized (closes: #533353)
+  * Improve packaging
+     - Update to S-V to 3.9.2
+     - Bump Debhelper to v7
+     - Switch to dpkg-source 3.0 (quilt) format
+     - Switch to dh-style debian/rules
+     - Remove unused dependencies
+     - Update package description (closes: #590531)
+     - Add watchfile
+     - Update FSF address
+  * New maintainer: Jonathan McCrohan <jmccrohan@gmail.com>
+     - Many thanks to Rene Engelhard for his great work.
+
+ -- Jonathan McCrohan <jmccrohan@gmail.com>  Tue, 21 Feb 2012 22:08:12 +0000
+
+wavemon (0.6.10-1) unstable; urgency=low
+
+  * New upstream release (closes: #560728)
+
+ -- Rene Engelhard <rene@debian.org>  Fri, 11 Dec 2009 22:10:25 +0100
+
+wavemon (0.6.7-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Rene Engelhard <rene@debian.org>  Fri, 14 Aug 2009 16:09:34 +0200
+
+wavemon (0.6.6-1) experimental; urgency=low
+
+  * New upstream release
+
+ -- Rene Engelhard <rene@debian.org>  Sun, 07 Jun 2009 22:22:33 +0200
+
+wavemon (0.6-1) experimental; urgency=low
+
+  * New upstream release
+    - contains newer config.* (closes: #357956)
+
+ -- Rene Engelhard <rene@debian.org>  Fri, 17 Apr 2009 00:37:20 +0200
+
+wavemon (0.5-1) unstable; urgency=low
+
+  * New upstream release
+    - fixes display of signal and noise levels when specifying interface
+      (closes: #444773)
+    - does not crash anymore when window is too small (closes: #201418)
+    - allows overriding of settings in .wavemonrc on command line
+      (closes: #258784)
+  * clean debian/patches except 11_wavemonrc_section.diff
+  * add ${misc:Depends}
+  * fix for new menu section
+
+ -- Rene Engelhard <rene@debian.org>  Fri, 17 Apr 2009 00:36:22 +0200
+
+wavemon (0.4.0b-11) unstable; urgency=low
+
+  * build-depend on linux-libc-dev as first alternative. Fixes the FTBFS
+    on the ia64 buildd...
+  * fix wavemonrc(5)'s section
+
+ -- Rene Engelhard <rene@debian.org>  Mon, 02 Jul 2007 14:06:09 +0200
+
+wavemon (0.4.0b-10) unstable; urgency=low
+
+  * add patch from Paul Martin fixing UTF-8 locale (closes: #229106)
+  * add patch from Paul Martin fixing reading dBM values (closes: #426300)
+  * make the code #include <stdlib.h> where needed
+
+ -- Rene Engelhard <rene@debian.org>  Sun, 17 Jun 2007 13:04:05 +0100
+
+wavemon (0.4.0b-9) unstable; urgency=low
+
+  * rebuild against new linux-kernel-headers (closes: #328442)
+
+ -- Rene Engelhard <rene@debian.org>  Fri,  2 Dec 2005 09:33:40 +0100
+
+wavemon (0.4.0b-8) unstable; urgency=low
+
+  * fix build with gcc-4.0 (closes: #297247), thanks Andreas Jochens
+
+ -- Rene Engelhard <rene@debian.org>  Tue, 26 Jul 2005 22:38:24 +0200
+
+wavemon (0.4.0b-7) unstable; urgency=low
+
+  * add patch for fixing build with gcc-3.4, thanks Andreas Jochens
+    (closes: #264264)
+
+ -- Rene Engelhard <rene@debian.org>  Tue, 10 Aug 2004 00:18:16 +0200
+
+wavemon (0.4.0b-6) unstable; urgency=low
+
+  * fix aplist_scr.c to display MAC adresses actuallx XX:XX:...,
+    thanks Sebastian 'yath' Schmidt for the patch (closes: #233103)
+
+ -- Rene Engelhard <rene@debian.org>  Tue, 17 Feb 2004 00:36:49 +0100
+
+wavemon (0.4.0b-5) unstable; urgency=medium
+
+  * rebuild with linux-kernel-headers and thefore newer
+    linux/wireless.h (closes: #223660)
+
+ -- Rene Engelhard <rene@debian.org>  Sun, 14 Dec 2003 20:47:17 +0100
+
+wavemon (0.4.0b-4) unstable; urgency=high
+
+  * add patches from Lennart Poettering <mzqrooht@itaparica.org>; thanks:
+    - make wavemon show WEP keyinfo correctly if containing
+      bytes > 0x7F (closes: #205907)
+    - x show ESSIDs and Nicks > 31 chars correctly
+      x draw its gauges even on terminals having more than 127 colums
+      (addresses: #205915)
+  * Standards-Version: 3.6.1 (no changes needed)
+
+ -- Rene Engelhard <rene@debian.org>  Fri,  5 Sep 2003 20:14:05 +0200
+
+wavemon (0.4.0b-3) unstable; urgency=low
+
+  * The "Argh-I-thought-cdbs-would-depend-on-debhelper" release.
+  * add Build-Depends: on debhelper (>= 4.1.0) (as the docs say...)
+    (closes: #204024)
+
+ -- Rene Engelhard <rene@debian.org>  Mon,  4 Aug 2003 02:01:07 +0200
+
+wavemon (0.4.0b-2) unstable; urgency=low
+
+  * The "OK-let's-try-cdbs-out" release.
+  * New maintainer; thanks Joey
+  * move to cdbs
+  * call exit(0) instead of exit() in wavemon.c (closes: #195174)
+  * cleans right (closes: #199004)
+  * remove the NMU disclaimer...
+  * Standards-Version: 3.6.0
+
+ -- Rene Engelhard <rene@debian.org>  Fri,  1 Aug 2003 05:47:33 +0200
+
+wavemon (0.4.0b-1) unstable; urgency=low
+
+  * Added a disclaimer for those people who plan to NMU this package
+  * New upstream version (closes: Bug##137040)
+  * Applied patches from Vincent Danjean <Vincent.Danjean@ens-lyon.org>,
+    thanks a lot.
+  * Updated Standards-Version
+
+ -- Martin Schulze <joey@infodrom.org>  Mon, 14 Apr 2003 19:29:30 +0200
+
+wavemon (0.3.3-1) unstable; urgency=low
+
+  * Initial packaging
+
+ -- Martin Schulze <joey@finlandia.infodrom.north.de>  Sat,  8 Dec 2001 10:38:31 +0100
