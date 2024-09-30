@@ -1,0 +1,2 @@
+version=3
+https://github.com/uoaerg/wavemon/tags .*/v(\d[\d\.]+)\.tar\.gz
