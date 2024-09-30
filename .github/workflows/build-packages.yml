@@ -11,7 +11,7 @@ on:
         options:
           - all
           - iw
-	  - wavemon
+          - wavemon
           - wlanpi-linux-firmware
         default: all
 
