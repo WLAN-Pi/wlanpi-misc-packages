@@ -2,7 +2,7 @@ wlanpi-linux-firmware (1.20240903-1wlanpi1) bullseye; urgency=medium
 
   * wlanpi-linux-firmware version 1.20240903-1wlanpi1
 
- -- Daniel Finimundi <daniel@finimundi.com>  Fri, 20 Sep 2024 09:41:20 +0000
+ -- Daniel Finimundi <daniel@finimundi.com>  Fri, 20 Sep 2024 09:42:52 +0000
 
 wlanpi-linux-firmware (1.20220609-1wlanpi1) bullseye; urgency=medium
 
