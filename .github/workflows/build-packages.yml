@@ -22,9 +22,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        distro: [bullseye]
+        distro: [bullseye,bookworm]
         package: [iw,wlanpi-linux-firmware]
-        arch: [armhf,arm64]
+        arch: [arm64]
 
     steps:
       - name: Checkout
@@ -32,6 +32,7 @@ jobs:
 
       - name: Install dependencies
         run: |
+          sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 0E98404D386FA1D9
           sudo apt-get update -yqq
           sudo apt-get install -yqq --no-install-recommends \
                 git bc bison flex libssl-dev make libc6-dev libncurses5-dev devscripts \
@@ -45,7 +46,7 @@ jobs:
           ./package.sh --arch=${{ matrix.arch }} --package=${{ matrix.package }}
 
       - name: Upload package ${{ matrix.package }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: ${{ steps.build-package.outputs.deb-package != '' }}
         with:
           name: ${{ matrix.package }}-${{ matrix.arch }}-${{ steps.build-package.outputs.package-version }}
