@@ -1,8 +1,8 @@
-wlanpi-linux-firmware (1.20240417-1wlanpi1) bullseye; urgency=medium
+wlanpi-linux-firmware (1.20240723-1wlanpi1) bullseye; urgency=medium
 
-  * wlanpi-linux-firmware version 1.20240417-1wlanpi1
+  * wlanpi-linux-firmware version 1.20240723-1wlanpi1
 
- -- Daniel Finimundi <daniel@finimundi.com>  Thu, 02 May 2024 08:29:21 +0000
+ -- Daniel Finimundi <daniel@finimundi.com>  Wed, 24 Jul 2024 23:32:22 +0000
 
 wlanpi-linux-firmware (1.20220609-1wlanpi1) bullseye; urgency=medium
 
