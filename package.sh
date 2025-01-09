@@ -8,7 +8,7 @@ CACHE_PATH="${SCRIPT_PATH}/source"
 LOG_PATH="${SCRIPT_PATH}/logs"
 COMMIT_MSG_FILE="${SCRIPT_PATH}/commit_msg.txt"
 
-BUILD_ARCH="armhf"
+BUILD_ARCH="arm64"
 CLEAN_PACKAGE="1"
 FORCE_SYNC="0"
 NUM_CORES=$(($(nproc)/2))

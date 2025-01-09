@@ -1,0 +1,5 @@
+wpa-supplicant (2.11-1wlanpi1) bullseye; urgency=medium
+
+  * Initial WLAN Pi package for wpa-supplicant
+
+ -- Josh Schmelzle <josh@joshschmelzle.com>  Thu, 09 Jan 2025 00:00:00 +0000

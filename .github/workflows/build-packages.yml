@@ -12,23 +12,38 @@ on:
           - all
           - iw
           - wlanpi-linux-firmware
+          - iperf2
+          - iperf3
+          - wavemon
+          - wpa-supplicant
         default: all
 
 jobs:
+  matrix-prep:
+    runs-on: ubuntu-22.04
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - id: set-matrix
+        run: |
+          if [ "${{ github.event.inputs.packages }}" = "all" ]; then
+            echo 'matrix={"package": ["iw", "wlanpi-linux-firmware", "iperf2", "iperf3", "wavemon", "wpa-supplicant"], "distro": ["bullseye", "bookworm"], "arch": ["arm64"]}' >> $GITHUB_OUTPUT
+          else
+            echo 'matrix={"package": ["${{ github.event.inputs.packages }}"], "distro": ["bullseye", "bookworm"], "arch": ["arm64"]}' >> $GITHUB_OUTPUT
+          fi
+
   build:
+    needs: matrix-prep
     name: package ${{ matrix.package }}+${{ matrix.arch }}
     runs-on: 'ubuntu-22.04'
 
     strategy:
       fail-fast: false
-      matrix:
-        distro: [bullseye,bookworm]
-        package: [iw,wlanpi-linux-firmware]
-        arch: [arm64]
+      matrix: ${{fromJson(needs.matrix-prep.outputs.matrix)}}
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install dependencies
         run: |

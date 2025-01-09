@@ -1,0 +1,20 @@
+# debian/control
+Source: wavemon
+Section: net
+Priority: optional
+Maintainer: Josh Schmelzle <josh@joshschmelzle.com>
+Build-Depends: debhelper-compat (= 12),
+ libncurses5-dev,
+ libnl-3-dev,
+ libnl-genl-3-dev,
+ pkg-config
+Standards-Version: 4.5.0
+Homepage: https://github.com/uoaerg/wavemon
+
+Package: wavemon
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Wireless network monitor
+ Wavemon is an ncurses-based monitoring application for wireless network
+ devices. It displays continuously updated information about signal levels
+ and wireless-specific statistics.
