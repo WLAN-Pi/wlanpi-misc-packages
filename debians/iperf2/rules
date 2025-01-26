@@ -9,4 +9,7 @@ override_dh_auto_clean:
 	[ ! -f Makefile ] || $(MAKE) distclean
 	dh_auto_clean
 
+override_dh_auto_configure:
+	./configure --prefix=/usr
+
 override_dh_auto_test:

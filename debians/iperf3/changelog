@@ -1,5 +1,53 @@
+iperf3 (3.18-9wlanpi1) bullseye; urgency=medium
+
+  * iperf3 version 3.18-9wlanpi1
+
+ -- Daniel Finimundi <daniel@finimundi.com>  Sun, 26 Jan 2025 23:10:23 +0000
+
+iperf3 (3.18-8wlanpi1) bullseye; urgency=medium
+
+  * iperf3 version 3.18-8wlanpi1
+
+ -- Daniel Finimundi <daniel@finimundi.com>  Sun, 26 Jan 2025 23:06:48 +0000
+
+iperf3 (3.18-7wlanpi1) bullseye; urgency=medium
+
+  * iperf3 version 3.18-7wlanpi1
+
+ -- Daniel Finimundi <daniel@finimundi.com>  Sun, 26 Jan 2025 22:56:02 +0000
+
+iperf3 (3.18-6wlanpi1) bullseye; urgency=medium
+
+  * iperf3 version 3.18-6wlanpi1
+
+ -- Daniel Finimundi <daniel@finimundi.com>  Sun, 26 Jan 2025 22:55:35 +0000
+
+iperf3 (3.18-5wlanpi1) bullseye; urgency=medium
+
+  * iperf3 version 3.18-5wlanpi1
+
+ -- Daniel Finimundi <daniel@finimundi.com>  Sun, 26 Jan 2025 22:54:18 +0000
+
+iperf3 (3.18-4wlanpi1) bullseye; urgency=medium
+
+  * iperf3 version 3.18-4wlanpi1
+
+ -- Daniel Finimundi <daniel@finimundi.com>  Sun, 26 Jan 2025 22:52:16 +0000
+
+iperf3 (3.18-3wlanpi1) bullseye; urgency=medium
+
+  * iperf3 version 3.18-3wlanpi1
+
+ -- Daniel Finimundi <daniel@finimundi.com>  Sun, 26 Jan 2025 22:51:24 +0000
+
+iperf3 (3.18-2wlanpi1) bullseye; urgency=medium
+
+  * iperf3 version 3.18-2wlanpi1
+
+ -- Daniel Finimundi <daniel@finimundi.com>  Sun, 26 Jan 2025 22:50:57 +0000
+
 iperf3 (3.18-1wlanpi1) unstable; urgency=medium
 
   * Initial WLAN Pi package for iperf3
 
- -- Josh Schmelzle <josh@joshschmelzle.com>  Thu, 09 Jan 2025 00:00:00 +0000
+ -- Josh Schmelzle <josh@joshschmelzle.com>  Sun, 26 Jan 2025 00:00:00 +0000
