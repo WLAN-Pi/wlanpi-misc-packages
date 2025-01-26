@@ -20,7 +20,7 @@ on:
 
 jobs:
   matrix-prep:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
@@ -101,11 +101,11 @@ jobs:
           assignees: danielmundi
 
   slack-workflow-status:
-    if: always()
+    if: ${{ always() && (github.repository_owner == 'WLAN-Pi') && (! github.event.pull_request.head.repo.fork) }}
     name: Post Workflow Status to Slack
     needs:
       - build
-    runs-on: 'ubuntu-22.04'
+    runs-on: 'ubuntu-24.04'
     steps:
       - name: Slack Workflow Notification
         uses: Gamesight/slack-workflow-status@master

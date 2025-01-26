@@ -6,6 +6,9 @@
 *.tar.xz
 /iw
 /wavemon
+/iperf2
+/iperf3
+/wpa-supplicant
 /wlanpi-linux-firmware
 .DS_Store
 commit_msg.txt
