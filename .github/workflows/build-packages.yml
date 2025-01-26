@@ -27,7 +27,7 @@ jobs:
       - id: set-matrix
         run: |
           if [ "${{ github.event.inputs.packages }}" = "all" ]; then
-            echo 'matrix={"package": ["iw", "wlanpi-linux-firmware", "iperf2", "iperf3", "wavemon", "wpa-supplicant"], "distro": ["bullseye", "bookworm"], "arch": ["arm64"]}' >> $GITHUB_OUTPUT
+            echo 'matrix={"package": ["iw", "wlanpi-linux-firmware", "iperf2", "iperf3", "wavemon", "wpa_supplicant"], "distro": ["bullseye", "bookworm"], "arch": ["arm64"]}' >> $GITHUB_OUTPUT
           else
             echo 'matrix={"package": ["${{ github.event.inputs.packages }}"], "distro": ["bullseye", "bookworm"], "arch": ["arm64"]}' >> $GITHUB_OUTPUT
           fi
@@ -54,14 +54,6 @@ jobs:
                 libdistro-info-perl
           sudo apt-get install -yqq --no-install-recommends \
                 crossbuild-essential-armhf crossbuild-essential-arm64
-
-      # - name: Install QEMU dependencies
-      #   run: |
-      #     sudo apt-get update
-      #     sudo apt-get install -y qemu-user-static binfmt-support
-
-      # - name: Register QEMU handlers 
-      #   run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
 
       - name: Build package ${{ matrix.package }}
         id: build-package
@@ -94,7 +86,7 @@ jobs:
           path: ${{ steps.build-package.outputs.deb-package }}
 
       - name: Upload arm64 package to packagecloud debian/${{ matrix.distro }} 
-        if: matrix.arch == 'arm64' && (github.repository_owner == 'WLAN-Pi') && (! github.event.pull_request.head.repo.fork) }}
+        if: ${{ matrix.arch == 'arm64' && (github.repository_owner == 'WLAN-Pi') && (! github.event.pull_request.head.repo.fork) }}
         uses: danielmundi/upload-packagecloud@main
         with:
           package-name: ${{ steps.build-package.outputs.deb-package }}
@@ -105,7 +97,7 @@ jobs:
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
-        if: ${{ steps.build-package.outputs.deb-package != '' }}
+        if: ${{ steps.build-package.outputs.deb-package != '' && (github.repository_owner == 'WLAN-Pi') && (! github.event.pull_request.head.repo.fork) }}
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           add-paths: debians
