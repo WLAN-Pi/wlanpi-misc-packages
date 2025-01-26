@@ -25,6 +25,7 @@ usage()
 {
     echo "Usage: $0 [ -c | --clean ] [ -f | --force-sync ]
                     [ --arch ARCH ]
+                    [ --distro DISTRO ]
                     [ -a | --all ]
                     [ --package ]
                     [ -j CORES ]
