@@ -34,8 +34,8 @@ jobs:
 
   build:
     needs: matrix-prep
-    name: package ${{ matrix.package }}+${{ matrix.arch }}
-    runs-on: 'ubuntu-22.04'
+    name: Build package ${{ matrix.package }}+${{ matrix.distro }}+${{ matrix.arch }}
+    runs-on: 'ubuntu-24.04'
 
     strategy:
       fail-fast: false
