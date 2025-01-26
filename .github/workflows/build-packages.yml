@@ -15,7 +15,7 @@ on:
           - iperf2
           - iperf3
           - wavemon
-          - wpa-supplicant
+          - wpa_supplicant
         default: all
 
 jobs:
