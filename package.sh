@@ -155,7 +155,10 @@ build_packages()
             continue
         fi
         package_version="${package_version}-${deb_version}wlanpi1"
-        echo "package-version=${package_version}" >> $GITHUB_OUTPUT
+
+        if [ -n "$GITHUB_OUTPUT" ]; then
+            echo "package-version=${package_version}" >> $GITHUB_OUTPUT
+        fi
 
         log "Using version ${package_version} for ${package_name}"
         (cd "${package_path}"; dch -v "${package_version}" -D bullseye --force-distribution "${package_name} version ${package_version}")
