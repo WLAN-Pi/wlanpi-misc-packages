@@ -6,7 +6,7 @@ Build-Depends: debhelper-compat (= 12), autotools-dev
 Standards-Version: 4.5.0
 Homepage: https://github.com/esnet/iperf
 
-Package: iperf2
+Package: iperf3
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: Internet Protocol bandwidth measuring tool

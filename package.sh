@@ -224,21 +224,27 @@ download_source()
     fi
 
     if [ ! -d "${target_path}" ]; then
-        log "ok" "Downloading ${target_package} source from ${url}, branch ${ref}"
-        git clone ${fetch_depth} -b "${ref}" "${url}" "${target_path}"
+        # log "ok" "Downloading ${target_package} source from ${url}, branch ${ref}"
+        # git clone ${fetch_depth} -b "${ref}" "${url}" "${target_path}"
+        log "ok" "Downloading ${target_package} source from ${url}"
+        git clone ${fetch_depth} "${url}" "${target_path}"
+        git -C "${target_path}" checkout "${ref}"
     elif [ "${FORCE_SYNC}" == "1" ]; then
-        log "ok" "Fetching new ${target_package} version on branch ${ref}"
+        log "ok" "Fetching new ${target_package} version for ${ref}"
         pushd "${target_path}" >/dev/null
 
-        git remote set-branches origin "${ref}"
-        git fetch -q ${fetch_depth} ${unshallow} origin "${ref}"
+        # git remote set-branches origin "${ref}"
+        # git fetch -q ${fetch_depth} ${unshallow} origin "${ref}"
+
+        git fetch -q ${fetch_depth} ${unshallow} origin
 
         if [ "${CLEAN_PACKAGE}" == "1" ]; then
             git reset --hard
             git clean -fdx
         fi
 
-        git checkout -B "${ref}" origin/"${ref}"
+        git checkout "${ref}"
+        # git checkout -B "${ref}" origin/"${ref}"
 
         if [ $? -ne 0 ]; then
             log "error" "Couldn't checkout to new ${target_package} version. Try executing again with --clean arg to reset the workspace"

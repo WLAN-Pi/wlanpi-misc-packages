@@ -1,3 +1,39 @@
+iperf3 (3.18-15wlanpi1) bullseye; urgency=medium
+
+  * iperf3 version 3.18-15wlanpi1
+
+ -- Daniel Finimundi <daniel@finimundi.com>  Sun, 26 Jan 2025 23:21:20 +0000
+
+iperf3 (3.18-14wlanpi1) bullseye; urgency=medium
+
+  * iperf3 version 3.18-14wlanpi1
+
+ -- Daniel Finimundi <daniel@finimundi.com>  Sun, 26 Jan 2025 23:21:04 +0000
+
+iperf3 (3.18-13wlanpi1) bullseye; urgency=medium
+
+  * iperf3 version 3.18-13wlanpi1
+
+ -- Daniel Finimundi <daniel@finimundi.com>  Sun, 26 Jan 2025 23:19:44 +0000
+
+iperf3 (3.18-12wlanpi1) bullseye; urgency=medium
+
+  * iperf3 version 3.18-12wlanpi1
+
+ -- Daniel Finimundi <daniel@finimundi.com>  Sun, 26 Jan 2025 23:17:19 +0000
+
+iperf3 (3.18-11wlanpi1) bullseye; urgency=medium
+
+  * iperf3 version 3.18-11wlanpi1
+
+ -- Daniel Finimundi <daniel@finimundi.com>  Sun, 26 Jan 2025 23:17:03 +0000
+
+iperf3 (3.18-10wlanpi1) bullseye; urgency=medium
+
+  * iperf3 version 3.18-10wlanpi1
+
+ -- Daniel Finimundi <daniel@finimundi.com>  Sun, 26 Jan 2025 23:15:19 +0000
+
 iperf3 (3.18-9wlanpi1) bullseye; urgency=medium
 
   * iperf3 version 3.18-9wlanpi1

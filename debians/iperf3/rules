@@ -3,7 +3,14 @@
 export DH_VERBOSE = 1
 
 %:
-	dh $@
+	dh $@ --with autotools-dev
 
 override_dh_auto_configure:
+	./bootstrap.sh
 	./configure --prefix=/usr
+
+override_dh_auto_clean:
+	[ -f Makefile ] && $(MAKE) distclean || true
+	dh_auto_clean
+
+override_dh_auto_test:
