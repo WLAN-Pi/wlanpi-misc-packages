@@ -146,6 +146,10 @@ build_packages()
         current_deb_version=${current_version%wlanpi*}
         current_deb_version=${current_deb_version#*-}
   
+        log "info" "upstream_version: ${upstream_version}"
+        log "info" "package_version: ${package_version}"
+        log "info" "current_upstream_version: ${current_upstream_version}"
+
         deb_version="1"
         if $(dpkg --compare-versions "${package_version}" eq "${current_upstream_version}"); then
             log "warn" "Upstream version is the same as last built. Incrementing debian build number."
@@ -247,6 +251,7 @@ log()
     RED='\033[0;31m'
     GREEN='\033[0;32m'
     ORANGE='\033[0;33m'
+    BLUE='\033[0;34m'
     NC='\033[0m'
 
     if [ "$1" == "ok" ]; then
@@ -255,6 +260,8 @@ log()
         echo -en "${RED}[ ERROR ]${NC} "
     elif [ "$1" == "warn" ]; then
         echo -en "${ORANGE}[ WARN ]${NC} "
+    elif [ "$1" == "info" ]; then
+        echo -en "${BLUE}[ INFO ]${NC} "
     fi
     echo "$2"
 }
