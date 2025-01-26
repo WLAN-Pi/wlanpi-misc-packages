@@ -2,7 +2,7 @@ Source: iperf2
 Section: net
 Priority: optional
 Maintainer: Josh Schmelzle <josh@joshschmelzle.com>
-Build-Depends: debhelper-compat (= 12), dh-autoreconf, automake, autoconf, libtool
+Build-Depends: debhelper-compat (= 12), dh-autoreconf, automake, autoconf (>= 2.71), libtool
 standards-Version: 4.5.0
 Homepage: https://iperf2.sourceforge.io/
 
