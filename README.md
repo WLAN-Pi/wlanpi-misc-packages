@@ -8,7 +8,10 @@ Packaging miscellaneous binaries, like firmware and iw. Goal is to have a packag
 
 ```
 # Build a specific package
-./package.sh --package iperf3
+./package.sh --package iperf2
+
+# Force clean rebuild
+./package.sh --clean --force-sync --package iperf3
 
 # Build all packages
 ./package.sh --all

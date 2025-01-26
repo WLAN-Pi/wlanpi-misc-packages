@@ -120,8 +120,18 @@ build_packages()
             commit_date="$(cd ${package_path}; git show -s --format=%ct HEAD)"
             upstream_version="$(date -d "@$commit_date" -u +1.%Y%m%d)"
         else
-            upstream_version="$(cd ${package_path}; git describe --tags)"
-            upstream_version="$(echo "${upstream_version}" | sed 's/^[a-zA-Z-]*//' | tr '-' '.')"
+            # upstream_version="$(cd ${package_path}; git describe --tags)"
+            set +e
+            upstream_version="$(cd ${package_path}; git describe --tags 2>/dev/null)"
+            set -e
+            if [ -z "$upstream_version" ]; then
+                # If no tags, try to get from branch name
+                branch_name="$(cd ${package_path}; git rev-parse --abbrev-ref HEAD)"
+                # Convert tag format with dashes to dots
+                upstream_version="$(echo "${branch_name}" | tr '-' '.')"
+            else
+                upstream_version="$(echo "${upstream_version}" | sed 's/^[a-zA-Z-]*//' | tr '-' '.')"
+            fi
         fi
 
         if $(dpkg --compare-versions "${upstream_version}" gt "${package_version}"); then
@@ -195,7 +205,10 @@ download_source()
     fetch_depth="--depth=1"
     if [ "${shallow}" == "describe" ]; then
         unset fetch_depth
-        unshallow="--unshallow"
+        # Only try to unshallow if the repo is actually shallow
+        if git -C "${target_path}" rev-parse --is-shallow-repository 2>/dev/null | grep -q "true"; then
+            unshallow="--unshallow"
+        fi
     fi
 
     if [ ! -d "${target_path}" ]; then
@@ -213,7 +226,7 @@ download_source()
             git clean -fdx
         fi
 
-        git co -B "${ref}" origin/"${ref}"
+        git checkout -B "${ref}" origin/"${ref}"
 
         if [ $? -ne 0 ]; then
             log "error" "Couldn't checkout to new ${target_package} version. Try executing again with --clean arg to reset the workspace"
