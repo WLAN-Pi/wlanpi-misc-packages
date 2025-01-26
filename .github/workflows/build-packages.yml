@@ -90,18 +90,8 @@ jobs:
         uses: actions/upload-artifact@v4
         if: ${{ steps.build-package.outputs.deb-package != '' }}
         with:
-          name: ${{ matrix.package }}-${{ matrix.arch }}-${{ steps.build-package.outputs.package-version }}
+          name: ${{ matrix.package }}-${{ matrix.arch }}-${{ matrix.distro }}-${{ steps.build-package.outputs.package-version }}
           path: ${{ steps.build-package.outputs.deb-package }}
-
-      - name: Upload armhf package to raspbian/${{ matrix.distro }}
-        if: matrix.arch == 'armhf'
-        uses: danielmundi/upload-packagecloud@main
-        with:
-          package-name: ${{ steps.build-package.outputs.deb-package }}
-          packagecloud-username: wlanpi
-          packagecloud-repo: dev
-          packagecloud-distrib: raspbian/${{ matrix.distro }}
-          packagecloud-token: ${{ secrets.PACKAGECLOUD_TOKEN }}
 
       - name: Upload arm64 package to debian/${{ matrix.distro }}
         if: matrix.arch == 'arm64'
