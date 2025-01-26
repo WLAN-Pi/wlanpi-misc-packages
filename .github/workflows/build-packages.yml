@@ -55,18 +55,18 @@ jobs:
           sudo apt-get install -yqq --no-install-recommends \
                 crossbuild-essential-armhf crossbuild-essential-arm64
 
-      - name: Install QEMU dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y qemu-user-static binfmt-support
+      # - name: Install QEMU dependencies
+      #   run: |
+      #     sudo apt-get update
+      #     sudo apt-get install -y qemu-user-static binfmt-support
 
-      - name: Register QEMU handlers 
-        run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+      # - name: Register QEMU handlers 
+      #   run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
 
       - name: Build package ${{ matrix.package }}
         id: build-package
         run: |
-          ./package.sh --arch=${{ matrix.arch }} --package=${{ matrix.package }}
+          ./package.sh --arch=${{ matrix.arch }} --package=${{ matrix.package }} --distro==${{ matrix.distro }}
 
       - name: Check debootstrap logs
         if: failure()
@@ -83,18 +83,18 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: debootstrap-${{ matrix.distro }}-${{ matrix.arch }}-logs
-          path: /srv/chroot/${{ matrix.distro }}-${{ matrix.arch }}-sbuild/debootstrap/debootstrap.log
+          name: debootstrap-${{ matrix.package }}-${{ matrix.distro }}-${{ matrix.arch }}-logs
+          path: /srv/chroot/${{ matrix.package }}-${{ matrix.distro }}-${{ matrix.arch }}-sbuild/debootstrap/debootstrap.log
 
-      - name: Upload package ${{ matrix.package }}
+      - name: Upload package ${{ matrix.package }} to GitHub
         uses: actions/upload-artifact@v4
         if: ${{ steps.build-package.outputs.deb-package != '' }}
         with:
           name: ${{ matrix.package }}-${{ matrix.arch }}-${{ matrix.distro }}-${{ steps.build-package.outputs.package-version }}
           path: ${{ steps.build-package.outputs.deb-package }}
 
-      - name: Upload arm64 package to debian/${{ matrix.distro }}
-        if: matrix.arch == 'arm64'
+      - name: Upload arm64 package to packagecloud debian/${{ matrix.distro }} 
+        if: matrix.arch == 'arm64' && (github.repository_owner == 'WLAN-Pi') && (! github.event.pull_request.head.repo.fork) }}
         uses: danielmundi/upload-packagecloud@main
         with:
           package-name: ${{ steps.build-package.outputs.deb-package }}
