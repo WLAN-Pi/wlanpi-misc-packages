@@ -60,6 +60,24 @@ jobs:
         run: |
           ./package.sh --arch=${{ matrix.arch }} --package=${{ matrix.package }}
 
+      - name: Check debootstrap logs
+        if: failure()
+        run: |
+          for distro in bullseye bookworm; do
+            logfile="/srv/chroot/${distro}-${{ matrix.arch }}-sbuild/debootstrap/debootstrap.log"
+            if [ -f "$logfile" ]; then
+              echo "=== $distro logs ==="
+              cat "$logfile"
+            fi
+          done
+
+      - name: Upload debootstrap logs 
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: debootstrap-${{ matrix.distro }}-${{ matrix.arch }}-logs
+          path: /srv/chroot/${{ matrix.distro }}-${{ matrix.arch }}-sbuild/debootstrap/debootstrap.log
+
       - name: Upload package ${{ matrix.package }}
         uses: actions/upload-artifact@v4
         if: ${{ steps.build-package.outputs.deb-package != '' }}
