@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PARSED_ARGS=$(getopt -o cfhaj: --long clean,force-sync,help,all,distro --long arch:,package: -- "$@")
+PARSED_ARGS=$(getopt -o cfhaj: --long clean,force-sync,help,all --long arch:,package:,distro: -- "$@")
 VALID_ARGS=$?
 
 SCRIPT_PATH="$(dirname $(readlink -f "$0"))"
@@ -75,7 +75,7 @@ process_options()
                 shift 2
                 ;;
             --distro )
-                DISTRO="$2"
+                BUILD_DISTRO="$2"
                 shift 2
                 ;;
             -- )
@@ -182,7 +182,7 @@ build_packages()
         fi
 
         log "Using version ${package_version} for ${package_name}"
-        (cd "${package_path}"; dch -v "${package_version}" -D "${DISTRO}" --force-distribution "${package_name} version ${package_version}")
+        (cd "${package_path}"; dch -v "${package_version}" -D "${BUILD_DISTRO}" --force-distribution "${package_name} version ${package_version}")
         cp "${package_path}/debian/changelog" "${package_debian_path}/changelog"
 
         git add "${package_debian_path}/changelog"
@@ -193,7 +193,7 @@ build_packages()
             cd "${package_path}"
             # git archive --format=tar --prefix="${package_name}-${upstream_version}/" HEAD | xz > "../${package_name}_${upstream_version}.orig.tar.xz"
             git archive --format=tar HEAD | xz -T0 > "../${package_name}_${package_version%-*}.orig.tar.xz"
-            INPUTS_ARCH=${BUILD_ARCH} INPUTS_DISTRO="${DISTRO}" INPUTS_RUN_LINTIAN="false" "${SCRIPT_PATH}"/sbuild-debian-package/build.sh
+            INPUTS_ARCH=${BUILD_ARCH} INPUTS_DISTRO="${BUILD_DISTRO}" INPUTS_RUN_LINTIAN="false" "${SCRIPT_PATH}"/sbuild-debian-package/build.sh
             cp *.deb "${SCRIPT_PATH}"
         )
         package_built="1"
