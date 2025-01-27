@@ -2,7 +2,9 @@ Source: iperf3
 Section: net
 Priority: optional
 Maintainer: Josh Schmelzle <josh@joshschmelzle.com>
-Build-Depends: debhelper-compat (= 12), autotools-dev
+Build-Depends: debhelper-compat (= 12), 
+               autotools-dev,
+               autoconf-2.71 | autoconf (>= 2.71~)
 Standards-Version: 4.5.0
 Homepage: https://github.com/esnet/iperf
 

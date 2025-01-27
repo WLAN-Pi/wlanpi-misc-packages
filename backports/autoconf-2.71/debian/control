@@ -1,0 +1,13 @@
+Source: autoconf-2.71
+Section: devel
+Priority: optional
+Maintainer: Josh Schmelzle <josh@joshschmelzle.com>
+Build-Depends: debhelper-compat (= 12), m4, perl
+Standards-Version: 4.5.0
+
+Package: autoconf-2.71
+Architecture: all
+Depends: ${misc:Depends}, m4, perl
+Provides: autoconf (= 2.71)
+Description: Automatic configure script builder (backported 2.71)
+ Custom backport of autoconf 2.71 for WLAN Pi package builds

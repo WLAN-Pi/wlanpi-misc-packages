@@ -126,6 +126,29 @@ build_packages()
         log "ok" "Packaging ${package_name}"
         set -e
 
+        version_greater_equal() {
+            printf '%s\n' "$1" "$2" | sort -C -V
+            return $?
+        }
+
+        need_backport=true
+
+        if command -v autoconf >/dev/null 2>&1; then
+            current_version=$(autoconf --version | head -n1 | awk '{print $NF}')
+            if version_greater_equal "$current_version" "2.71"; then
+                echo "Autoconf $current_version is already installed and meets minimum version 2.71"
+                need_backport=false
+            fi
+        fi
+
+        if [ "$need_backport" = true ]; then
+            echo "Building autoconf 2.71 from backports..."
+            cd backports
+            ./build-autoconf.sh
+            cd ..
+            export PATH="/usr/bin:$PATH"
+        fi
+
         package_path="${SCRIPT_PATH}/${package_name}"
         package_debian_path="${SCRIPT_PATH}/debians/${package_name}"
 
