@@ -1,9 +1,3 @@
-iperf2 (2.1.9-1wlanpi1) bullseye; urgency=medium
-
-  * iperf2 version 2.1.9-1wlanpi1
-
- -- Daniel Finimundi <daniel@finimundi.com>  Mon, 27 Jan 2025 03:27:53 +0000
-
 iperf2 (2.1.9-0wlanpi0) unstable; urgency=medium
 
   * Initial WLAN Pi package for iperf2
