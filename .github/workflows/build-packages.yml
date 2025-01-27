@@ -77,7 +77,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: debootstrap-${{ matrix.package }}-${{ matrix.distro }}-${{ matrix.arch }}-logs
-          path: /srv/chroot/${{ matrix.package }}-${{ matrix.distro }}-${{ matrix.arch }}-sbuild/debootstrap/debootstrap.log
+          path: /srv/chroot/${{ matrix.distro }}-${{ matrix.arch }}-sbuild/debootstrap/debootstrap.log
 
       - name: Upload package ${{ matrix.package }} to GitHub
         uses: actions/upload-artifact@v4
