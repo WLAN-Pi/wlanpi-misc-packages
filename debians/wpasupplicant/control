@@ -8,6 +8,7 @@ Build-Depends: debhelper-compat (= 12),
  libnl-3-dev,
  libnl-genl-3-dev,
  pkg-config,
+ libnl-route-3-dev,
  libpcsc-lite-dev [!armhf !arm64] | libpcsclite-dev
 Standards-Version: 4.5.0
 Homepage: https://w1.fi/wpa_supplicant/
