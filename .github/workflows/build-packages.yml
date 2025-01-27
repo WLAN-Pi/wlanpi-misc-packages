@@ -59,7 +59,7 @@ jobs:
       - name: Build package ${{ matrix.package }}
         id: build-package
         run: |
-          ./package.sh --arch=${{ matrix.arch }} --package=${{ matrix.package }} --distro==${{ matrix.distro }}
+          ./package.sh --arch=${{ matrix.arch }} --package=${{ matrix.package }} --distro=${{ matrix.distro }}
 
       - name: Check debootstrap logs
         if: failure()
