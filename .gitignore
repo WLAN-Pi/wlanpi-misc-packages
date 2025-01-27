@@ -8,7 +8,8 @@
 /wavemon
 /iperf2
 /iperf3
-/wpa-supplicant
+/hostapd
+/wpasupplicant
 /wlanpi-linux-firmware
 .DS_Store
 commit_msg.txt

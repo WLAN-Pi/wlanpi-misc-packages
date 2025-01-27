@@ -94,6 +94,19 @@ process_options()
     fi
 }
 
+sanitize_version() {
+    local version="$1"
+    # Remove leading non-digit characters
+    version=$(echo "$version" | sed -E 's/^[^0-9]*//')
+    # Replace both underscores and hyphens with dots
+    version=$(echo "$version" | tr '_-' '..')
+    # Ensure it starts with a digit
+    if [[ ! "$version" =~ ^[0-9] ]]; then
+        version="0.${version}"
+    fi
+    echo "$version"
+}
+
 build_packages()
 {
     log "ok" "Syncing sbuild submodule"
@@ -126,17 +139,15 @@ build_packages()
             commit_date="$(cd ${package_path}; git show -s --format=%ct HEAD)"
             upstream_version="$(date -d "@$commit_date" -u +1.%Y%m%d)"
         else
-            # upstream_version="$(cd ${package_path}; git describe --tags)"
-            set +e
-            upstream_version="$(cd ${package_path}; git describe --tags 2>/dev/null)"
-            set -e
-            if [ -z "$upstream_version" ]; then
-                # If no tags, try to get from branch name
-                branch_name="$(cd ${package_path}; git rev-parse --abbrev-ref HEAD)"
-                # Convert tag format with dashes to dots
-                upstream_version="$(echo "${branch_name}" | tr '-' '.')"
-            else
-                upstream_version="$(echo "${upstream_version}" | sed 's/^[a-zA-Z-]*//' | tr '-' '.')"
+            # Try direct ref sanitization first
+            upstream_version=$(sanitize_version "${ref}")
+
+            # Fallback to git describe if needed
+            if [ -z "$upstream_version" ] || [ "$upstream_version" == "0." ]; then
+                set +e
+                upstream_version="$(cd ${package_path}; git describe --tags 2>/dev/null)"
+                upstream_version=$(sanitize_version "$upstream_version")
+                set -e
             fi
         fi
 
@@ -180,6 +191,7 @@ build_packages()
         log "ok" "Build Debian package for (${BUILD_ARCH})"
         (
             cd "${package_path}"
+            # git archive --format=tar --prefix="${package_name}-${upstream_version}/" HEAD | xz > "../${package_name}_${upstream_version}.orig.tar.xz"
             git archive --format=tar HEAD | xz -T0 > "../${package_name}_${package_version%-*}.orig.tar.xz"
             INPUTS_ARCH=${BUILD_ARCH} INPUTS_DISTRO="${DISTRO}" INPUTS_RUN_LINTIAN="false" "${SCRIPT_PATH}"/sbuild-debian-package/build.sh
             cp *.deb "${SCRIPT_PATH}"
@@ -225,8 +237,6 @@ download_source()
     fi
 
     if [ ! -d "${target_path}" ]; then
-        # log "ok" "Downloading ${target_package} source from ${url}, branch ${ref}"
-        # git clone ${fetch_depth} -b "${ref}" "${url}" "${target_path}"
         log "ok" "Downloading ${target_package} source from ${url}"
         git clone ${fetch_depth} "${url}" "${target_path}"
         git -C "${target_path}" checkout "${ref}"

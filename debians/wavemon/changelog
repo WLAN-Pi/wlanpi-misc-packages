@@ -1,4 +1,4 @@
-wavemon (0.9.6-1wlanpi1) bullseye; urgency=medium
+wavemon (0.9.6-0wlanpi1) bullseye; urgency=medium
 
   * Initial WLAN Pi package for wavemon
 
