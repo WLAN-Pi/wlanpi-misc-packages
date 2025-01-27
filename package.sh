@@ -193,7 +193,7 @@ build_packages()
             cd "${package_path}"
             # git archive --format=tar --prefix="${package_name}-${upstream_version}/" HEAD | xz > "../${package_name}_${upstream_version}.orig.tar.xz"
             git archive --format=tar HEAD | xz -T0 > "../${package_name}_${package_version%-*}.orig.tar.xz"
-            INPUTS_ARCH=${BUILD_ARCH} INPUTS_DISTRO="${BUILD_DISTRO}" INPUTS_RUN_LINTIAN="false" "${SCRIPT_PATH}"/sbuild-debian-package/build.sh
+            INPUTS_ARCH=${BUILD_ARCH} INPUTS_DISTRO="${BUILD_DISTRO}" INPUTS_RUN_LINTIAN="false" INPUTS_INSTALL_AUTOCONF="true" "${SCRIPT_PATH}"/sbuild-debian-package/build.sh
             cp *.deb "${SCRIPT_PATH}"
         )
         package_built="1"

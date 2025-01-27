@@ -18,8 +18,3 @@ fi
 # Build autoconf package
 cd "${AUTOCONF_DIR}"
 dpkg-buildpackage -us -uc
-
-# Install the package
-cd ..
-dpkg -i autoconf-${AUTOCONF_VERSION}_*.deb || true
-apt-get install -f
