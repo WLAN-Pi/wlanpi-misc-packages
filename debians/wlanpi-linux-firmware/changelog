@@ -1,3 +1,9 @@
+wlanpi-linux-firmware (1.20250115-1wlanpi1) bookworm; urgency=medium
+
+  * wlanpi-linux-firmware version 1.20250115-1wlanpi1
+
+ -- Daniel Finimundi <daniel@finimundi.com>  Tue, 28 Jan 2025 08:50:16 +0000
+
 wlanpi-linux-firmware (1.20240903-1wlanpi1) bullseye; urgency=medium
 
   * wlanpi-linux-firmware version 1.20240903-1wlanpi1
