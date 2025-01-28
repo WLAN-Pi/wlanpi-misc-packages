@@ -11,6 +11,10 @@ DEB_PATH=debian/$(PACKAGE_NAME)
 %:
 	dh $@ --with quilt
 
+override_dh_auto_clean:
+	rm -f Makefile
+	dh_auto_clean
+
 override_dh_auto_install:
 	mkdir -p \
 		$(DEB_PATH)/lib/firmware/intel \
@@ -19,3 +23,6 @@ override_dh_auto_install:
 	cp intel/ibt* $(DEB_PATH)/lib/firmware/intel/
 	install -o root -g root -m 644 debian/iwlwifi.conf $(DEB_PATH)/etc/modprobe.d/
 	dh_auto_install
+
+override_dh_auto_build:
+	# No build needed for firmware

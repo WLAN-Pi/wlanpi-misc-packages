@@ -1,0 +1,16 @@
+Source: iperf2
+Section: net
+Priority: optional
+Maintainer: Josh Schmelzle <josh@joshschmelzle.com>
+Build-Depends: debhelper-compat (= 12), autotools-dev
+standards-Version: 4.5.0
+Homepage: https://iperf2.sourceforge.io/
+
+Package: iperf2
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Internet Protocol bandwidth measuring tool
+ Iperf2 is a tool for active measurements of the maximum achievable
+ bandwidth on IP networks. It supports tuning of various parameters
+ related to timing, protocols, and buffers. For each test it reports
+ the measured throughput, loss, and other parameters.

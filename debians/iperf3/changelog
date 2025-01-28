@@ -1,0 +1,5 @@
+iperf3 (3.18-0wlanpi0) unstable; urgency=medium
+
+  * Initial WLAN Pi package for iperf3
+
+ -- Josh Schmelzle <josh@joshschmelzle.com>  Sun, 26 Jan 2025 00:00:00 +0000

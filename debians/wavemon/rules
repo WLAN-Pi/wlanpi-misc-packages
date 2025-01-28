@@ -1,0 +1,21 @@
+#!/usr/bin/make -f
+
+export DH_VERBOSE = 1
+export V = 1
+export VERBOSE = 1
+
+%:
+	dh $@ --with autoreconf
+
+override_dh_auto_clean:
+	[ ! -f Makefile ] || $(MAKE) distclean
+	dh_auto_clean
+
+override_dh_auto_configure:
+	./configure --prefix=/usr \
+		CFLAGS="$(CFLAGS) -v" \
+		V=1 \
+		--enable-dependency-tracking
+
+override_dh_auto_build:
+	$(MAKE) VERBOSE=1 V=1

@@ -1,0 +1,12 @@
+#!/usr/bin/make -f
+
+export DH_VERBOSE = 1
+
+%:
+	dh $@ --with=autoreconf
+
+override_dh_auto_configure:
+	cd hostapd && $(MAKE)
+
+override_dh_auto_install:
+	cd hostapd && $(MAKE) install DESTDIR=$(CURDIR)/debian/hostapd

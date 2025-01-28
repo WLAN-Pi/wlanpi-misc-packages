@@ -1,0 +1,15 @@
+#!/usr/bin/make -f
+
+export DH_VERBOSE = 1
+
+%:
+	dh $@ --with autoreconf
+
+override_dh_auto_clean:
+	[ ! -f Makefile ] || $(MAKE) distclean
+	dh_auto_clean
+
+override_dh_auto_configure:
+	./configure --prefix=/usr
+
+override_dh_auto_test:
