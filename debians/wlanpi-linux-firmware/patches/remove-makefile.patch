@@ -1,8 +1,3 @@
-Removing Makefile to prevent the default build behavior.
-We are just copying the desired files for WLAN Pi.
-diff --git a/Makefile b/Makefile
-deleted file mode 100644
-index 0719f874..00000000
 --- a/Makefile
 +++ /dev/null
 @@ -1,52 +0,0 @@

@@ -159,7 +159,7 @@ build_packages()
 
             # Fallback to git describe if needed
             if [ -z "$upstream_version" ] || [ "$upstream_version" == "0." ]; then
-                upstream_version="$(cd ${package_path}; git describe --tags 2>/dev/null)"
+                upstream_version="$(cd ${package_path}; git describe --tags --always 2>/dev/null)"
                 upstream_version=$(sanitize_version "$upstream_version")
             fi
         fi
@@ -267,6 +267,8 @@ download_source()
         git branch -r
         log "info" "Tags:"
         git tag
+        
+        log "info" "ref value: ${ref}"
 
         # Try to find the ref
         if git rev-parse --verify --quiet "refs/tags/${ref}" >/dev/null; then
