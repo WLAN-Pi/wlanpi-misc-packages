@@ -245,9 +245,8 @@ download_source()
         pushd "${target_path}" >/dev/null
 
         # git remote set-branches origin "${ref}"
-        # git fetch -q ${fetch_depth} ${unshallow} origin "${ref}"
-
-        git fetch -q ${fetch_depth} ${unshallow} origin
+        git fetch -q ${fetch_depth} ${unshallow} origin "${ref}"
+        # git fetch -q ${fetch_depth} ${unshallow} origin
 
         if [ "${CLEAN_PACKAGE}" == "1" ]; then
             git reset --hard
