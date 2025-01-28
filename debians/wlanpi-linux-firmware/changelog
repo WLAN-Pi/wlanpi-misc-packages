@@ -1,4 +1,4 @@
-wlanpi-linux-firmware (1.20250115-1wlanpi1) bullseye; urgency=medium
+wlanpi-linux-firmware (1.20250115-1wlanpi1) bullseye, bookworm; urgency=medium
 
   * wlanpi-linux-firmware version 1.20250115-1wlanpi1
 
