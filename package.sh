@@ -253,8 +253,8 @@ download_source()
             git clean -fdx
         fi
 
-        git checkout "${ref}"
-        # git checkout -B "${ref}" origin/"${ref}"
+        # git checkout "${ref}"
+        git checkout -B "${ref}" origin/"${ref}"
 
         if [ $? -ne 0 ]; then
             log "error" "Couldn't checkout to new ${target_package} version. Try executing again with --clean arg to reset the workspace"
