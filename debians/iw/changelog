@@ -1,3 +1,9 @@
+iw (6.9.12.ga0a7dde-1wlanpi1) bullseye; urgency=medium
+
+  * iw version 6.9.12.ga0a7dde-1wlanpi1
+
+ -- Daniel Finimundi <daniel@finimundi.com>  Tue, 28 Jan 2025 06:32:28 +0000
+
 iw (6.9.6.gd088c8a-1wlanpi1) bullseye; urgency=medium
 
   * iw version 6.9.6.gd088c8a-1wlanpi1
