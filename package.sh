@@ -131,9 +131,25 @@ build_packages()
 
         download_source "${package_url}" "${package_ref}" "${package_name}" "${package_version_type}"
 
-        # Copy debian files to source dir
+        if [ "${package_name}" = "wlanpi-linux-firmware" ]; then
+            if [ ! -f "${package_path}/Makefile" ]; then
+                log "warn" "Makefile not found, creating empty one for patching"
+                touch "${package_path}/Makefile"
+            fi
+        fi
+        
+        # Copy debian files to source dir with proper permissions
+        log "ok" "Copying debian files"
+        rm -rf "${package_path}/debian"
         mkdir -p "${package_path}/debian"
-        rsync -aq "${package_debian_path}"/* "${package_path}"/debian/
+        cp -r "${package_debian_path}"/* "${package_path}/debian/"
+        chmod -R u+rwX,go+rX,go-w "${package_path}/debian"
+
+        # Ensure changelog is in the right place
+        if [ ! -f "${package_path}/debian/changelog" ]; then
+            log "error" "Changelog not found at ${package_path}/debian/changelog"
+            exit 1
+        fi
 
         if [ "${package_version_type}" == "date" ]; then
             commit_date="$(cd ${package_path}; git show -s --format=%ct HEAD)"
@@ -144,10 +160,8 @@ build_packages()
 
             # Fallback to git describe if needed
             if [ -z "$upstream_version" ] || [ "$upstream_version" == "0." ]; then
-                set +e
                 upstream_version="$(cd ${package_path}; git describe --tags 2>/dev/null)"
                 upstream_version=$(sanitize_version "$upstream_version")
-                set -e
             fi
         fi
 
@@ -194,7 +208,7 @@ build_packages()
             # git archive --format=tar --prefix="${package_name}-${upstream_version}/" HEAD | xz > "../${package_name}_${upstream_version}.orig.tar.xz"
             git archive --format=tar HEAD | xz -T0 > "../${package_name}_${package_version%-*}.orig.tar.xz"
             INPUTS_ARCH=${BUILD_ARCH} INPUTS_DISTRO="${BUILD_DISTRO}" INPUTS_RUN_LINTIAN="false" INPUTS_INSTALL_AUTOCONF="true" "${SCRIPT_PATH}"/sbuild-debian-package/build.sh
-            cp *.deb "${SCRIPT_PATH}"
+            find . -name "*.deb" -exec cp {} "${SCRIPT_PATH}" \;
         )
         package_built="1"
     done
@@ -246,8 +260,19 @@ download_source()
                     return 1
                 fi
             fi
+        elif [[ "${target_package}" == "iperf2" ]]; then
+            # For iperf2, we need to fetch the specific branch
+            if ! git clone "${url}" "${target_path}"; then
+                log "error" "Failed to clone repository from ${url}"
+                return 1
+            fi
+            # Explicitly fetch the branch we want
+            if ! git -C "${target_path}" fetch origin "${ref}:refs/remotes/origin/${ref}"; then
+                log "error" "Failed to fetch branch ${ref}"
+                return 1
+            fi
         else
-            # Normal clone for non-firmware packages
+            # Normal clone for other packages
             if ! git clone "${fetch_depth}" "${url}" "${target_path}"; then
                 log "error" "Failed to clone repository from ${url}"
                 return 1
