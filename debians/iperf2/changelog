@@ -1,8 +1,8 @@
-iperf2 (65a780c-1wlanpi1) bullseye; urgency=medium
+iperf2 (65a780c-1wlanpi1) bullseye, bookworm; urgency=medium
 
   * iperf2 version 65a780c-1wlanpi1
 
- -- Daniel Finimundi <daniel@finimundi.com>  Tue, 28 Jan 2025 08:49:38 +0000
+ -- Daniel Finimundi <daniel@finimundi.com>  Tue, 28 Jan 2025 08:49:36 +0000
 
 iperf2 (2.1.9-0wlanpi0) unstable; urgency=medium
 
