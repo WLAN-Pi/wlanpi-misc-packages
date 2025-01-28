@@ -221,15 +221,16 @@ git_commit()
 
 download_source()
 {
-    url="$1"
-    ref="$2"
-    target_package="$3"
-    shallow="$4"
-    target_path="${SCRIPT_PATH}/${target_package}"
+    local url="$1"
+    local ref="$2"
+    local target_package="$3"
+    local shallow="$4"
+    local target_path="${SCRIPT_PATH}/${target_package}"
+    local fetch_depth="--depth=1"
+    local unshallow=""
 
-    fetch_depth="--depth=1"
-    if [ "${shallow}" == "describe" ]; then
-        unset fetch_depth
+    if [ "${shallow}" = "describe" ]; then
+        fetch_depth=""
         # Only try to unshallow if the repo is actually shallow
         if git -C "${target_path}" rev-parse --is-shallow-repository 2>/dev/null | grep -q "true"; then
             unshallow="--unshallow"
@@ -238,33 +239,78 @@ download_source()
 
     if [ ! -d "${target_path}" ]; then
         log "ok" "Downloading ${target_package} source from ${url}"
-        git clone ${fetch_depth} "${url}" "${target_path}"
-        git -C "${target_path}" checkout "${ref}"
-    elif [ "${FORCE_SYNC}" == "1" ]; then
+        if ! git clone "${fetch_depth}" "${url}" "${target_path}"; then
+            log "error" "Failed to clone repository from ${url}"
+            return 1
+        fi
+
+        log "ok" "Attempting to checkout ${ref}"
+        
+        # Try branch checkout first
+        if git -C "${target_path}" checkout "${ref}" 2>/dev/null; then
+            log "ok" "Successfully checked out branch ${ref}"
+        # Then try tag checkout
+        elif git -C "${target_path}" checkout "refs/tags/${ref}" 2>/dev/null; then
+            log "ok" "Successfully checked out tag ${ref}"
+        # Finally try commit hash
+        elif git -C "${target_path}" checkout "${ref}^{commit}" 2>/dev/null; then
+            log "ok" "Successfully checked out commit ${ref}"
+        else
+            log "error" "Could not find branch, tag, or commit '${ref}'"
+            log "info" "Available branches:"
+            git -C "${target_path}" branch -r
+            log "info" "Available tags:"
+            git -C "${target_path}" tag
+            return 1
+        fi
+    elif [ "${FORCE_SYNC}" = "1" ]; then
         log "ok" "Fetching new ${target_package} version for ${ref}"
-        pushd "${target_path}" >/dev/null
+        pushd "${target_path}" >/dev/null || exit
+        
+        # Fetch all refs to ensure we have access to branches and tags
+        if [ -n "${fetch_depth}" ]; then
+            git fetch -q "${fetch_depth}" origin "+refs/heads/*:refs/remotes/origin/*"
+            git fetch -q "${fetch_depth}" origin "+refs/tags/*:refs/tags/*"
+        else
+            # If unshallow is set, use it
+            if [ -n "${unshallow}" ]; then
+                git fetch -q "${unshallow}" origin "+refs/heads/*:refs/remotes/origin/*"
+                git fetch -q "${unshallow}" origin "+refs/tags/*:refs/tags/*"
+            else
+                git fetch -q origin "+refs/heads/*:refs/remotes/origin/*"
+                git fetch -q origin "+refs/tags/*:refs/tags/*"
+            fi
+        fi
 
-        # git remote set-branches origin "${ref}"
-        git fetch -q ${fetch_depth} ${unshallow} origin "${ref}"
-        # git fetch -q ${fetch_depth} ${unshallow} origin
-
-        if [ "${CLEAN_PACKAGE}" == "1" ]; then
+        if [ "${CLEAN_PACKAGE}" = "1" ]; then
             git reset --hard
             git clean -fdx
         fi
 
-        # git checkout "${ref}"
-        git checkout -B "${ref}" origin/"${ref}"
-
-        if [ $? -ne 0 ]; then
-            log "error" "Couldn't checkout to new ${target_package} version. Try executing again with --clean arg to reset the workspace"
-            exit 3
+        # Try branch checkout first
+        if git checkout -B "${ref}" "origin/${ref}" 2>/dev/null; then
+            log "ok" "Successfully checked out branch ${ref}"
+        # Then try tag checkout
+        elif git checkout "refs/tags/${ref}" 2>/dev/null; then
+            log "ok" "Successfully checked out tag ${ref}"
+        # Finally try commit hash
+        elif git checkout "${ref}^{commit}" 2>/dev/null; then
+            log "ok" "Successfully checked out commit ${ref}"
+        else
+            log "error" "Could not find branch, tag, or commit '${ref}'"
+            log "info" "Available branches:"
+            git branch -r
+            log "info" "Available tags:"
+            git tag
+            popd >/dev/null || exit
+            return 1
         fi
 
-        popd >/dev/null
+        popd >/dev/null || exit
     else
         log "warn" "${target_package} already downloaded. Please use --force-sync if you want to update it."
     fi
+    return 0
 }
 
 log()
