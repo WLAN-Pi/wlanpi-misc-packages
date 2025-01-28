@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -e
-
 PARSED_ARGS=$(getopt -o cfhaj: --long clean,force-sync,help,all --long arch:,package:,distro: -- "$@")
 VALID_ARGS=$?
 
@@ -126,19 +124,13 @@ build_packages()
         fi
 
         log "ok" "Packaging ${package_name}"
+        set -e
 
         package_path="${SCRIPT_PATH}/${package_name}"
         package_debian_path="${SCRIPT_PATH}/debians/${package_name}"
 
         download_source "${package_url}" "${package_ref}" "${package_name}" "${package_version_type}"
 
-        if [ "${package_name}" = "wlanpi-linux-firmware" ]; then
-            if [ ! -f "${package_path}/Makefile" ]; then
-                log "warn" "Makefile not found, creating empty one for patching"
-                touch "${package_path}/Makefile"
-            fi
-        fi
-        
         # Copy debian files to source dir with proper permissions
         log "ok" "Copying debian files"
         rm -rf "${package_path}/debian"
