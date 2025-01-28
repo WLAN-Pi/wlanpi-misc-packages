@@ -1,4 +1,4 @@
-iperf2 (65a780c-1wlanpi1) bookworm; urgency=medium
+iperf2 (65a780c-1wlanpi1) bullseye, bookworm; urgency=medium
 
   * iperf2 version 65a780c-1wlanpi1
 
