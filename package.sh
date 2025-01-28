@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 PARSED_ARGS=$(getopt -o cfhaj: --long clean,force-sync,help,all --long arch:,package:,distro: -- "$@")
 VALID_ARGS=$?
 
