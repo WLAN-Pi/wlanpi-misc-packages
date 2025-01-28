@@ -124,7 +124,6 @@ build_packages()
         fi
 
         log "ok" "Packaging ${package_name}"
-        set -e
 
         package_path="${SCRIPT_PATH}/${package_name}"
         package_debian_path="${SCRIPT_PATH}/debians/${package_name}"
