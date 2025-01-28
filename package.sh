@@ -242,53 +242,57 @@ download_source()
     local target_path="${SCRIPT_PATH}/${target_package}"
     local fetch_depth="--depth=1"
 
+    local target_path="${SCRIPT_PATH}/${target_package}"
+
     if [ ! -d "${target_path}" ]; then
         log "ok" "Downloading ${target_package} source from ${url}"
         
-        if [[ "${ref}" == iwlwifi-fw-* ]]; then
-            # For iwlwifi firmware, just fetch the specific tag
-            if ! git clone --depth=1 --branch "${ref}" "${url}" "${target_path}"; then
-                log "error" "Failed to clone firmware tag ${ref}"
-                # If specific tag fails, try normal clone as fallback
-                if ! git clone --depth=1 "${url}" "${target_path}"; then
-                    log "error" "Failed to clone repository from ${url}"
-                    return 1
-                fi
-                # Try to fetch just the specific tag
-                if ! git -C "${target_path}" fetch --depth=1 origin "refs/tags/${ref}:refs/tags/${ref}"; then
-                    log "error" "Failed to fetch tag ${ref}"
-                    return 1
-                fi
-            fi
-        elif [[ "${target_package}" == "iperf2" ]]; then
-            # For iperf2, we need to fetch the specific branch
-            if ! git clone "${url}" "${target_path}"; then
-                log "error" "Failed to clone repository from ${url}"
-                return 1
-            fi
-            # Explicitly fetch the branch we want
-            if ! git -C "${target_path}" fetch origin "${ref}:refs/remotes/origin/${ref}"; then
-                log "error" "Failed to fetch branch ${ref}"
-                return 1
-            fi
-        else
-            # Normal clone for other packages
-            if ! git clone "${fetch_depth}" "${url}" "${target_path}"; then
-                log "error" "Failed to clone repository from ${url}"
-                return 1
-            fi
-        fi
-
-        log "ok" "Attempting to checkout ${ref}"
-        
-        if ! git -C "${target_path}" checkout "${ref}"; then
-            log "error" "Could not find branch, tag, or commit '${ref}'"
-            log "info" "Available branches:"
-            git -C "${target_path}" branch -r
-            log "info" "Available tags:"
-            git -C "${target_path}" tag
+        # Do a full clone with all refs
+        if ! git clone --verbose --progress "${url}" "${target_path}"; then
+            log "error" "Failed to clone repository from ${url}"
             return 1
         fi
+
+        pushd "${target_path}" >/dev/null || exit
+        
+        # Configure git to be verbose
+        git config --local core.verbose true
+        
+        # Fetch everything explicitly
+        log "ok" "Fetching all refs for ${target_package}"
+        git fetch --verbose --tags --force --prune origin "+refs/heads/*:refs/remotes/origin/*"
+        git fetch --verbose --tags --force --prune origin "+refs/tags/*:refs/tags/*"
+
+        # Show what we found
+        log "info" "Remote branches:"
+        git branch -r
+        log "info" "Tags:"
+        git tag
+
+        # Try to find the ref
+        if git rev-parse --verify --quiet "refs/tags/${ref}" >/dev/null; then
+            log "info" "Found tag ${ref}"
+            log "ok" "Checking out tag ${ref}"
+            git checkout -f "refs/tags/${ref}"
+        elif git rev-parse --verify --quiet "refs/remotes/origin/${ref}" >/dev/null; then
+            log "info" "Found branch ${ref}"
+            log "ok" "Checking out branch ${ref}"
+            git checkout -b "${ref}" "origin/${ref}"
+        elif git rev-parse --verify --quiet "${ref}^{commit}" >/dev/null; then
+            log "info" "Found commit ${ref}"
+            log "ok" "Checking out commit ${ref}"
+            git checkout -f "${ref}"
+        else
+            log "error" "Could not find ref ${ref} as tag, branch, or commit"
+            log "info" "Available branches:"
+            git branch -r
+            log "info" "Available tags:"
+            git tag
+            popd >/dev/null || exit
+            return 1
+        fi
+
+        popd >/dev/null || exit
         log "ok" "Successfully checked out ${ref}"
         
     elif [ "${FORCE_SYNC}" = "1" ]; then
