@@ -25,15 +25,6 @@ execute_after_dh_install:
 	install --mode=644 -D wpa_supplicant/dbus/fi.w1.wpa_supplicant1.service \
 		debian/wpasupplicant/usr/share/dbus-1/system-services/fi.w1.wpa_supplicant1.service
 
-execute_after_dh_installexamples:
-	install -d debian/wpasupplicant/usr/share/doc/wpasupplicant/examples
-	install -m 644 wpa_supplicant/examples/* \
-		debian/wpasupplicant/usr/share/doc/wpasupplicant/examples/
-	# Fix includes in example files (from v2.10 rules)
-	sed -e 's="includes.h"=<stddef.h>=' \
-		-e 's="common/wpa_ctrl.h"=<wpa_ctrl.h>=' \
-		-i debian/wpasupplicant/usr/share/doc/wpasupplicant/examples/*.c
-
 execute_before_dh_clean:
 		rm -rf debian/wpasupplicant-udeb
 
