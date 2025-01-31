@@ -1,9 +1,10 @@
-wavemon (0.9.6-2wlanpi1) UNRELEASED; urgency=medium
+wavemon (0.9.6-3wlanpi1) bullseye; urgency=medium
 
   * wavemon version 0.9.6-1wlanpi1
   * wavemon version 0.9.6-2wlanpi1
+  * wavemon version 0.9.6-3wlanpi1
 
- -- Daniel Finimundi <daniel@finimundi.com>  Fri, 31 Jan 2025 11:45:53 -0600
+ -- Daniel Finimundi <daniel@finimundi.com>  Fri, 31 Jan 2025 21:31:00 +0000
 
 wavemon (0.9.6-0wlanpi1) bullseye; urgency=medium
 
