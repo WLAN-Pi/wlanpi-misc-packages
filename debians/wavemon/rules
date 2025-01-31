@@ -12,13 +12,12 @@ override_dh_auto_clean:
 	dh_auto_clean
 
 override_dh_update_autotools_config:
-	apt-get update
+	apt-get -y update
 	apt-get install -y m4 perl texinfo ca-certificates curl
 	update-ca-certificates
 	curl -L -o autoconf-2.71.tar.gz https://ftp.gnu.org/gnu/autoconf/autoconf-2.71.tar.gz
 	tar xf autoconf-2.71.tar.gz
 	cd autoconf-2.71 && ./configure --prefix=/usr && make && make install
-	apt-get install -y libnl-3-dev libnl-genl-3-dev libnl-cli-3-dev libncurses5-dev pkg-config
 	dh_update_autotools_config
 
 override_dh_auto_configure:
@@ -28,4 +27,6 @@ override_dh_auto_configure:
 		--enable-dependency-tracking
 
 override_dh_auto_build:
+	apt-get -y update
+	apt-get install -y libnl-3-dev libnl-genl-3-dev libnl-cli-3-dev libncurses5-dev pkg-config
 	$(MAKE) VERBOSE=1 V=1
