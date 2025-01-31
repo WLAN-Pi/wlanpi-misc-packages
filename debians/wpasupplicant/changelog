@@ -1,9 +1,10 @@
-wpasupplicant (2.11-2wlanpi1) UNRELEASED; urgency=medium
+wpasupplicant (2.11-3wlanpi1) UNRELEASED; urgency=medium
 
   * wpasupplicant version 2.11-1wlanpi1
   * wpasupplicant version 2.11-2wlanpi1
+  * wpasupplicant version 2.11-3wlanpi1
 
- -- Daniel Finimundi <daniel@finimundi.com>  Thu, 30 Jan 2025 21:00:45 -0600
+ -- Daniel Finimundi <daniel@finimundi.com>  Thu, 30 Jan 2025 21:04:04 -0600
 
 wpasupplicant (2.11-0wlanpi0) unstable; urgency=medium
 

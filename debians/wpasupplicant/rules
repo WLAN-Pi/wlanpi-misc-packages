@@ -2,20 +2,47 @@
 
 export DH_VERBOSE = 1
 
-%:
-	dh $@ --with=autoreconf
+BINDIR = /sbin
 
 override_dh_auto_configure:
 	cd wpa_supplicant && $(MAKE)
 
-override_dh_auto_install:
-	cd wpa_supplicant && \
-	$(MAKE) install DESTDIR=$(CURDIR)/debian/wpasupplicant BINDIR=/usr/bin SBINDIR=/sbin
 
-	# install -D wpa_supplicant $(CURDIR)/debian/wpasupplicant/usr/sbin/wpa_supplicant && \
-	# install -D wpa_cli $(CURDIR)/debian/wpasupplicant/usr/sbin/wpa_cli && \
-	# install -D wpa_passphrase $(CURDIR)/debian/wpasupplicant/usr/sbin/wpa_passphrase
-	# if [ -d wpa_supplicant/eap_*.so ]; then \
-	# 	install -d $(CURDIR)/debian/wpasupplicant/usr/lib/wpa_supplicant && \
-	# 	cp wpa_supplicant/*.so $(CURDIR)/debian/wpasupplicant/usr/lib/wpa_supplicant/; \
-	# fi
+override_dh_auto_install:
+	$(info Skip dh_auto_install ...)
+
+# override_dh_auto_install:
+# 	cd wpa_supplicant && \
+# 	$(MAKE) install DESTDIR=$(CURDIR)/debian/wpasupplicant BINDIR=/usr/bin SBINDIR=/sbin
+
+execute_after_dh_install:
+	install -D wpa_supplicant/wpa_supplicant debian/wpasupplicant/sbin/wpa_supplicant
+	install -D wpa_supplicant/wpa_cli debian/wpasupplicant/sbin/wpa_cli
+	install -D wpa_supplicant/wpa_passphrase debian/wpasupplicant/usr/bin/wpa_passphrase
+	
+	install --mode=644 -D wpa_supplicant/dbus/dbus-wpa_supplicant.conf \
+		debian/wpasupplicant/etc/dbus-1/system.d/wpa_supplicant.conf
+	install --mode=644 -D wpa_supplicant/dbus/fi.w1.wpa_supplicant1.service \
+		debian/wpasupplicant/usr/share/dbus-1/system-services/fi.w1.wpa_supplicant1.service
+
+execute_after_dh_installexamples:
+	install -d debian/wpasupplicant/usr/share/doc/wpasupplicant/examples
+	install -m 644 wpa_supplicant/examples/* \
+		debian/wpasupplicant/usr/share/doc/wpasupplicant/examples/
+	# Fix includes in example files (from v2.10 rules)
+	sed -e 's="includes.h"=<stddef.h>=' \
+		-e 's="common/wpa_ctrl.h"=<wpa_ctrl.h>=' \
+		-i debian/wpasupplicant/usr/share/doc/wpasupplicant/examples/*.c
+
+execute_before_dh_clean:
+		rm -rf debian/wpasupplicant-udeb
+
+override_dh_installchangelogs:
+		dh_installchangelogs --package=wpasupplicant wpa_supplicant/ChangeLog
+		dh_installchangelogs --remaining-packages
+
+execute_after_dh_installexamples:
+		sed -e 's="includes.h"=<stddef.h>=' -e 's="common/wpa_ctrl.h"=<wpa_ctrl.h>=' -i debian/*/usr/share/doc/*/examples/*.c
+
+%:
+	dh $@
