@@ -1,12 +1,76 @@
 #!/usr/bin/make -f
 
-export DH_VERBOSE = 1
+export DEB_BUILD_MAINT_OPTIONS=hardening=+all
+DPKG_EXPORT_BUILDFLAGS = 1
 
-%:
-	dh $@ --with=autoreconf
+# Pass hardening flags
+DEB_CFLAGS_MAINT_APPEND   = -MMD -Wall $(shell dpkg-buildflags --get CPPFLAGS)
+DEB_CXXFLAGS_MAINT_APPEND = $(shell dpkg-buildflags --get CPPFLAGS)
+
+include /usr/share/dpkg/default.mk
+
+BINDIR = /sbin
+V = 1
+
+PKG_CONFIG ?= $(DEB_HOST_GNU_TYPE)-pkg-config
+export BINDIR V PKG_CONFIG
+
+HOSTAPD_DOT_CONFIG := debian/config/hostapd/$(DEB_HOST_ARCH_OS)
 
 override_dh_auto_configure:
-	cd hostapd && $(MAKE)
+	# Configure hostapd using defconfig
+	cd hostapd && cp defconfig .config
+
+override_dh_auto_build:
+	# Build hostapd
+	dh_auto_build --sourcedirectory=hostapd \
+	              --buildsystem=makefile
+	dh_auto_clean --sourcedirectory=src --buildsystem=makefile
+
+override_dh_auto_clean:
+	dh_auto_clean --sourcedirectory=hostapd \
+	              --buildsystem=makefile
 
 override_dh_auto_install:
-	cd hostapd && $(MAKE) install DESTDIR=$(CURDIR)/debian/hostapd
+	$(info Skip dh_auto_install ...)
+
+execute_after_dh_install:
+	install -D hostapd/hostapd debian/hostapd/usr/sbin/hostapd
+	install -D hostapd/hostapd_cli debian/hostapd/usr/sbin/hostapd_cli
+
+	install --mode=755 -D debian/hostapd.init debian/hostapd/etc/init.d/hostapd
+
+	install --mode=644 -D debian/hostapd.service \
+		debian/hostapd/lib/systemd/system/hostapd.service
+	install --mode=644 -D debian/hostapd@.service \
+		debian/hostapd/lib/systemd/system/hostapd@.service
+
+	install --mode=644 -D README debian/hostapd/usr/share/doc/hostapd/README.gz
+	install --mode=644 -D debian/hostapd.README.Debian debian/hostapd/usr/share/doc/hostapd/README.Debian
+
+	install -d debian/hostapd/usr/share/doc/hostapd/examples
+	install --mode=644 hostapd/hostapd.conf \
+		debian/hostapd/usr/share/doc/hostapd/examples/
+	install --mode=644 hostapd/hostapd.accept \
+		debian/hostapd/usr/share/doc/hostapd/examples/
+	install --mode=644 hostapd/hostapd.deny \
+		debian/hostapd/usr/share/doc/hostapd/examples/
+	install --mode=644 hostapd/hostapd.eap_user \
+		debian/hostapd/usr/share/doc/hostapd/examples/
+	install --mode=644 hostapd/hostapd.radius_clients \
+		debian/hostapd/usr/share/doc/hostapd/examples/
+	install --mode=644 hostapd/hostapd.wpa_psk \
+		debian/hostapd/usr/share/doc/hostapd/examples/
+
+	install -d debian/hostapd/usr/share/lintian/overrides
+	install --mode=644 debian/hostapd.lintian-overrides \
+		debian/hostapd/usr/share/lintian/overrides/hostapd
+
+
+override_dh_installchangelogs:
+	dh_installchangelogs --package=hostapd hostapd/ChangeLog
+	dh_installchangelogs --remaining-packages
+
+%:
+	dh $@
+

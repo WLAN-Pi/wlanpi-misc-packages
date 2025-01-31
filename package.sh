@@ -184,8 +184,10 @@ build_packages()
         fi
         package_version="${package_version}-${deb_version}wlanpi1"
 
-        if [ -n "$GITHUB_OUTPUT" ]; then
+        if [[ -n "${GITHUB_OUTPUT}" ]] && [[ -w "${GITHUB_OUTPUT}" ]]; then
             echo "package-version=${package_version}" >> $GITHUB_OUTPUT
+        else
+            echo "GITHUB_OUTPUT is not set or not writable"
         fi
 
         log "Using version ${package_version} for ${package_name}"
