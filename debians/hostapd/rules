@@ -46,7 +46,6 @@ execute_after_dh_install:
 		debian/hostapd/lib/systemd/system/hostapd@.service
 
 	install --mode=644 -D README debian/hostapd/usr/share/doc/hostapd/README.gz
-	install --mode=644 -D README-MULTI-AP debian/hostapd/usr/share/doc/hostapd/README-MULTI-AP.gz
 	install --mode=644 -D debian/hostapd.README.Debian debian/hostapd/usr/share/doc/hostapd/README.Debian
 
 	install -d debian/hostapd/usr/share/doc/hostapd/examples
