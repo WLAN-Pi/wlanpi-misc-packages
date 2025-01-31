@@ -5,10 +5,13 @@ export DH_VERBOSE = 1
 BINDIR = /usr/sbin
 
 override_dh_auto_configure:
-	cd hostapd && $(MAKE)
+	cd hostapd && cp defconfig .config && $(MAKE) clean && $(MAKE)
 
 override_dh_auto_install:
 	$(info Skip dh_auto_install ...)
+
+override_dh_auto_build:
+	# Explicitly empty to prevent default make from running again
 
 execute_after_dh_install:
 	install -D hostapd/hostapd debian/hostapd/usr/sbin/hostapd
