@@ -28,7 +28,7 @@ override_dh_auto_configure:
 
 override_dh_auto_build:
 	apt-get -y update
-	apt-get install -y libnl-3-dev libnl-genl-3-dev libnl-cli-3-dev libncurses5-dev libncursesw5-dev pkg-config
+	apt-get install -y libnl-3-dev libnl-genl-3-dev libnl-cli-3-dev libncurses5-dev libncursesw5-dev libcap-dev pkg-config
 	mkdir -p /usr/include/netlink || exit 1
 	ln -sf /usr/include/libnl3/netlink/* /usr/include/netlink/ || exit 1
 	$(MAKE) VERBOSE=1 V=1
