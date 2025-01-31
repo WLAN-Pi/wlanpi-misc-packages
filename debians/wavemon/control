@@ -3,13 +3,7 @@ Source: wavemon
 Section: net
 Priority: optional
 Maintainer: Josh Schmelzle <josh@joshschmelzle.com>
-Build-Depends: debhelper-compat (= 12),
- libncurses5-dev,
- libnl-3-dev,
- libnl-genl-3-dev,
- libnl-cli-3-dev (>= 3.2.22),
- pkg-config,
- curl
+Build-Depends: debhelper-compat (= 12)
 Standards-Version: 4.5.0
 Homepage: https://github.com/uoaerg/wavemon
 
