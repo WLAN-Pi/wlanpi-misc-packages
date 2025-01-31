@@ -13,7 +13,7 @@ override_dh_auto_clean:
 
 override_dh_update_autotools_config:
 	# Build and install autoconf 2.71
-	apt reinstall ca-certificates
+	apt reinstall -y ca-certificates
 	update-ca-certificates
 	curl -L -o autoconf-2.71.tar.gz https://ftp.gnu.org/gnu/autoconf/autoconf-2.71.tar.gz
 	tar xf autoconf-2.71.tar.gz
