@@ -11,11 +11,26 @@ override_dh_auto_clean:
 	[ ! -f Makefile ] || $(MAKE) distclean
 	dh_auto_clean
 
+override_dh_update_autotools_config:
+	apt-get -y update
+	apt-get install -y m4 perl texinfo ca-certificates curl
+	update-ca-certificates
+	curl -L -o autoconf-2.71.tar.gz https://ftp.gnu.org/gnu/autoconf/autoconf-2.71.tar.gz
+	tar xf autoconf-2.71.tar.gz
+	cd autoconf-2.71 && ./configure --prefix=/usr && make && make install
+	dh_update_autotools_config
+
 override_dh_auto_configure:
 	./configure --prefix=/usr \
-		CFLAGS="$(CFLAGS) -v" \
+		CFLAGS="$(CFLAGS) -D_XOPEN_SOURCE_EXTENDED -D_GNU_SOURCE -I/usr/include/ncursesw" \
+		CPPFLAGS="-D_DEFAULT_SOURCE -D_XOPEN_SOURCE_EXTENDED -D_GNU_SOURCE -I/usr/include/ncursesw" \
+		--enable-widec \
+		LIBS="-lncursesw -lpthread" \
+		PKG_CONFIG_PATH="/usr/lib/pkgconfig" \
 		V=1 \
 		--enable-dependency-tracking
 
 override_dh_auto_build:
-	$(MAKE) VERBOSE=1 V=1
+	apt-get -y update
+	apt-get install -y libnl-3-dev libnl-genl-3-dev libnl-cli-3-dev libncurses5-dev libncursesw5-dev libcap-dev pkg-config
+	$(MAKE) VERBOSE=1 V=1 CFLAGS="$(CFLAGS) -I/usr/include/libnl3 -D_XOPEN_SOURCE_EXTENDED -D_GNU_SOURCE -I/usr/include/ncursesw"
