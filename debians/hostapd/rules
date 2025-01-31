@@ -1,45 +1,43 @@
 #!/usr/bin/make -f
 
-export DH_VERBOSE = 1
+export DEB_BUILD_MAINT_OPTIONS=hardening=+all
+DPKG_EXPORT_BUILDFLAGS = 1
 
-BINDIR = /usr/sbin
+# Pass hardening flags
+DEB_CFLAGS_MAINT_APPEND   = -MMD -Wall $(shell dpkg-buildflags --get CPPFLAGS)
+DEB_CXXFLAGS_MAINT_APPEND = $(shell dpkg-buildflags --get CPPFLAGS)
+
+include /usr/share/dpkg/default.mk
+
+BINDIR = /sbin
+V = 1
+
+PKG_CONFIG ?= $(DEB_HOST_GNU_TYPE)-pkg-config
+export BINDIR V PKG_CONFIG
+
+HOSTAPD_DOT_CONFIG := debian/config/hostapd/$(DEB_HOST_ARCH_OS)
 
 override_dh_auto_configure:
-	cd hostapd && cp defconfig .config && $(MAKE) clean && $(MAKE)
+	# Configure hostapd
+	cp -v --remove-destination $(HOSTAPD_DOT_CONFIG) hostapd/.config
+
+override_dh_auto_build:
+	# Build hostapd
+	dh_auto_build --sourcedirectory=hostapd \
+	              --buildsystem=makefile
+	dh_auto_clean --sourcedirectory=src --buildsystem=makefile
+
+override_dh_auto_clean:
+	dh_auto_clean --sourcedirectory=hostapd \
+	              --buildsystem=makefile
 
 override_dh_auto_install:
 	$(info Skip dh_auto_install ...)
 
-override_dh_auto_build:
-	# Explicitly empty to prevent default make from running again
-
 execute_after_dh_install:
+	# Install binaries
 	install -D hostapd/hostapd debian/hostapd/usr/sbin/hostapd
 	install -D hostapd/hostapd_cli debian/hostapd/usr/sbin/hostapd_cli
-	
-	install --mode=644 -D debian/hostapd.default debian/hostapd/etc/default/hostapd
-	
-	install --mode=644 -D debian/hostapd.service \
-		debian/hostapd/lib/systemd/system/hostapd.service
-	install --mode=644 -D debian/hostapd@.service \
-		debian/hostapd/lib/systemd/system/hostapd@.service
-	
-	install -D debian/ifupdown.sh debian/hostapd/etc/hostapd/ifupdown.sh
-	install -D debian/if-pre-up.sh debian/hostapd/etc/network/if-pre-up.d/hostapd
-	install -D debian/if-post-down.sh debian/hostapd/etc/network/if-post-down.d/hostapd
-	
-	install --mode=644 -D hostapd/hostapd.conf \
-		debian/hostapd/usr/share/doc/hostapd/examples/hostapd.conf
-	install --mode=644 -D hostapd/hostapd.accept \
-		debian/hostapd/usr/share/doc/hostapd/examples/hostapd.accept
-	install --mode=644 -D hostapd/hostapd.deny \
-		debian/hostapd/usr/share/doc/hostapd/examples/hostapd.deny
-	install --mode=644 -D hostapd/hostapd.eap_user \
-		debian/hostapd/usr/share/doc/hostapd/examples/hostapd.eap_user
-	install --mode=644 -D hostapd/hostapd.radius_clients \
-		debian/hostapd/usr/share/doc/hostapd/examples/hostapd.radius_clients
-	install --mode=644 -D hostapd/hostapd.wpa_psk \
-		debian/hostapd/usr/share/doc/hostapd/examples/hostapd.wpa_psk
 
 override_dh_installchangelogs:
 	dh_installchangelogs --package=hostapd hostapd/ChangeLog
