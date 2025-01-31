@@ -22,10 +22,10 @@ override_dh_update_autotools_config:
 
 override_dh_auto_configure:
 	./configure --prefix=/usr \
-		CFLAGS="$(CFLAGS) -v -D_XOPEN_SOURCE_EXTENDED -std=c11 -I/usr/include/ncursesw" \
+		CFLAGS="$(CFLAGS) -D_XOPEN_SOURCE_EXTENDED -D_GNU_SOURCE -I/usr/include/ncursesw" \
+		CPPFLAGS="-D_DEFAULT_SOURCE -D_XOPEN_SOURCE_EXTENDED -D_GNU_SOURCE -I/usr/include/ncursesw" \
 		--enable-widec \
 		LIBS="-lncursesw" \
-		CPPFLAGS="-I/usr/include/ncursesw" \
 		PKG_CONFIG_PATH="/usr/lib/pkgconfig" \
 		V=1 \
 		--enable-dependency-tracking
@@ -33,4 +33,4 @@ override_dh_auto_configure:
 override_dh_auto_build:
 	apt-get -y update
 	apt-get install -y libnl-3-dev libnl-genl-3-dev libnl-cli-3-dev libncurses5-dev libncursesw5-dev libcap-dev pkg-config
-	$(MAKE) VERBOSE=1 V=1 CFLAGS="$(CFLAGS) -I/usr/include/libnl3"
+	$(MAKE) VERBOSE=1 V=1 CFLAGS="$(CFLAGS) -I/usr/include/libnl3" -D_XOPEN_SOURCE_EXTENDED -D_GNU_SOURCE -I/usr/include/ncursesw"
