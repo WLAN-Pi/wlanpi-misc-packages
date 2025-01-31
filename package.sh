@@ -118,6 +118,11 @@ build_packages()
         unset package_name package_url package_ref package_version package_version_type
         source "${package_conf}"
 
+        SETUP_COMMANDS="chmod +x /tmp/pre-build.sh; /tmp/pre-build.sh"
+        if [ "${package_name}" = "wavemon" ]; then
+            SETUP_COMMANDS="${SETUP_COMMANDS}; apt-get update && apt-get install -y libnl-3-dev libnl-genl-3-dev libnl-cli-3-dev libncurses5-dev pkg-config"
+        fi
+
         if [ "${BUILD_ALL}" != "1" ] && [ "${BUILD_PACKAGE}" != "${package_name}" ]; then
             log "warn" "Skipping package ${package_name}"
             continue
@@ -202,7 +207,7 @@ build_packages()
             cd "${package_path}"
             # git archive --format=tar --prefix="${package_name}-${upstream_version}/" HEAD | xz > "../${package_name}_${upstream_version}.orig.tar.xz"
             git archive --format=tar HEAD | xz -T0 > "../${package_name}_${package_version%-*}.orig.tar.xz"
-            INPUTS_ARCH=${BUILD_ARCH} INPUTS_DISTRO="${BUILD_DISTRO}" INPUTS_RUN_LINTIAN="false" "${SCRIPT_PATH}"/sbuild-debian-package/build.sh
+            INPUTS_ARCH=${BUILD_ARCH} INPUTS_DISTRO="${BUILD_DISTRO}" INPUTS_RUN_LINTIAN="false" INPUTS_SETUP_COMMANDS="${SETUP_COMMANDS}" "${SCRIPT_PATH}"/sbuild-debian-package/build.sh
             find . -name "*.deb" -exec cp {} "${SCRIPT_PATH}" \;
         )
         package_built="1"
