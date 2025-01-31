@@ -18,8 +18,8 @@ export BINDIR V PKG_CONFIG
 HOSTAPD_DOT_CONFIG := debian/config/hostapd/$(DEB_HOST_ARCH_OS)
 
 override_dh_auto_configure:
-	# Configure hostapd
-	cp -v --remove-destination $(HOSTAPD_DOT_CONFIG) hostapd/.config
+	# Configure hostapd using defconfig
+	cd hostapd && cp defconfig .config
 
 override_dh_auto_build:
 	# Build hostapd
