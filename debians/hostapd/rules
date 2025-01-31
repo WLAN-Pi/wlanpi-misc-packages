@@ -2,11 +2,46 @@
 
 export DH_VERBOSE = 1
 
-%:
-	dh $@ --with=autoreconf
+BINDIR = /usr/sbin
 
 override_dh_auto_configure:
 	cd hostapd && $(MAKE)
 
 override_dh_auto_install:
-	cd hostapd && $(MAKE) install DESTDIR=$(CURDIR)/debian/hostapd
+	$(info Skip dh_auto_install ...)
+
+execute_after_dh_install:
+	install -D hostapd/hostapd debian/hostapd/usr/sbin/hostapd
+	install -D hostapd/hostapd_cli debian/hostapd/usr/sbin/hostapd_cli
+	
+	install --mode=644 -D debian/hostapd.default debian/hostapd/etc/default/hostapd
+	
+	install --mode=644 -D debian/hostapd.service \
+		debian/hostapd/lib/systemd/system/hostapd.service
+	install --mode=644 -D debian/hostapd@.service \
+		debian/hostapd/lib/systemd/system/hostapd@.service
+	
+	install -D debian/ifupdown.sh debian/hostapd/etc/hostapd/ifupdown.sh
+	install -D debian/if-pre-up.sh debian/hostapd/etc/network/if-pre-up.d/hostapd
+	install -D debian/if-post-down.sh debian/hostapd/etc/network/if-post-down.d/hostapd
+	
+	install --mode=644 -D hostapd/hostapd.conf \
+		debian/hostapd/usr/share/doc/hostapd/examples/hostapd.conf
+	install --mode=644 -D hostapd/hostapd.accept \
+		debian/hostapd/usr/share/doc/hostapd/examples/hostapd.accept
+	install --mode=644 -D hostapd/hostapd.deny \
+		debian/hostapd/usr/share/doc/hostapd/examples/hostapd.deny
+	install --mode=644 -D hostapd/hostapd.eap_user \
+		debian/hostapd/usr/share/doc/hostapd/examples/hostapd.eap_user
+	install --mode=644 -D hostapd/hostapd.radius_clients \
+		debian/hostapd/usr/share/doc/hostapd/examples/hostapd.radius_clients
+	install --mode=644 -D hostapd/hostapd.wpa_psk \
+		debian/hostapd/usr/share/doc/hostapd/examples/hostapd.wpa_psk
+
+override_dh_installchangelogs:
+	dh_installchangelogs --package=hostapd hostapd/ChangeLog
+	dh_installchangelogs --remaining-packages
+
+%:
+	dh $@
+
