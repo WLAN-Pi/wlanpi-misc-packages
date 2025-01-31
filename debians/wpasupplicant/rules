@@ -9,4 +9,11 @@ override_dh_auto_configure:
 	cd wpa_supplicant && $(MAKE)
 
 override_dh_auto_install:
-	cd wpa_supplicant && $(MAKE) install DESTDIR=$(CURDIR)/debian/wpasupplicant
+	cd wpa_supplicant && \
+	install -D wpa_supplicant $(CURDIR)/debian/wpasupplicant/usr/sbin/wpa_supplicant && \
+	install -D wpa_cli $(CURDIR)/debian/wpasupplicant/usr/sbin/wpa_cli && \
+	install -D wpa_passphrase $(CURDIR)/debian/wpasupplicant/usr/sbin/wpa_passphrase
+	if [ -d wpa_supplicant/eap_*.so ]; then \
+		install -d $(CURDIR)/debian/wpasupplicant/usr/lib/wpa_supplicant && \
+		cp wpa_supplicant/*.so $(CURDIR)/debian/wpasupplicant/usr/lib/wpa_supplicant/; \
+	fi
