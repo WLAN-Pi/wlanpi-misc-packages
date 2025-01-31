@@ -35,9 +35,39 @@ override_dh_auto_install:
 	$(info Skip dh_auto_install ...)
 
 execute_after_dh_install:
-	# Install binaries
 	install -D hostapd/hostapd debian/hostapd/usr/sbin/hostapd
 	install -D hostapd/hostapd_cli debian/hostapd/usr/sbin/hostapd_cli
+
+	install --mode=755 -D debian/hostapd.init debian/hostapd/etc/init.d/hostapd
+
+	install --mode=644 -D debian/hostapd.service \
+		debian/hostapd/lib/systemd/system/hostapd.service
+	install --mode=644 -D debian/hostapd@.service \
+		debian/hostapd/lib/systemd/system/hostapd@.service
+
+	install --mode=644 -D README debian/hostapd/usr/share/doc/hostapd/README.gz
+	install --mode=644 -D README-WPS debian/hostapd/usr/share/doc/hostapd/README-WPS.gz
+	install --mode=644 -D README-MULTI-AP debian/hostapd/usr/share/doc/hostapd/README-MULTI-AP.gz
+	install --mode=644 -D debian/hostapd.README.Debian debian/hostapd/usr/share/doc/hostapd/README.Debian
+
+	install -d debian/hostapd/usr/share/doc/hostapd/examples
+	install --mode=644 hostapd/hostapd.conf \
+		debian/hostapd/usr/share/doc/hostapd/examples/
+	install --mode=644 hostapd/hostapd.accept \
+		debian/hostapd/usr/share/doc/hostapd/examples/
+	install --mode=644 hostapd/hostapd.deny \
+		debian/hostapd/usr/share/doc/hostapd/examples/
+	install --mode=644 hostapd/hostapd.eap_user \
+		debian/hostapd/usr/share/doc/hostapd/examples/
+	install --mode=644 hostapd/hostapd.radius_clients \
+		debian/hostapd/usr/share/doc/hostapd/examples/
+	install --mode=644 hostapd/hostapd.wpa_psk \
+		debian/hostapd/usr/share/doc/hostapd/examples/
+
+	install -d debian/hostapd/usr/share/lintian/overrides
+	install --mode=644 debian/hostapd.lintian-overrides \
+		debian/hostapd/usr/share/lintian/overrides/hostapd
+
 
 override_dh_installchangelogs:
 	dh_installchangelogs --package=hostapd hostapd/ChangeLog
