@@ -41,8 +41,6 @@ override_dh_installchangelogs:
 		dh_installchangelogs --package=wpasupplicant wpa_supplicant/ChangeLog
 		dh_installchangelogs --remaining-packages
 
-execute_after_dh_installexamples:
-		sed -e 's="includes.h"=<stddef.h>=' -e 's="common/wpa_ctrl.h"=<wpa_ctrl.h>=' -i debian/*/usr/share/doc/*/examples/*.c
-
 %:
 	dh $@
+
