@@ -9,7 +9,7 @@ Homepage: https://github.com/uoaerg/wavemon
 
 Package: wavemon
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}, libnl-cli-3-200 (>= 3.2.7)
 Description: Wireless network monitor
  Wavemon is an ncurses-based monitoring application for wireless network
  devices. It displays continuously updated information about signal levels
