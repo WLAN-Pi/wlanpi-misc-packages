@@ -8,7 +8,8 @@ Build-Depends: debhelper-compat (= 12),
  libnl-3-dev,
  libnl-genl-3-dev,
  libnl-cli-3-dev (>= 3.2.22),
- pkg-config
+ pkg-config,
+ curl
 Standards-Version: 4.5.0
 Homepage: https://github.com/uoaerg/wavemon
 
