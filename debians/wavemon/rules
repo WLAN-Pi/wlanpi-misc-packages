@@ -22,7 +22,7 @@ override_dh_update_autotools_config:
 
 override_dh_auto_configure:
 	./configure --prefix=/usr \
-		CFLAGS="$(CFLAGS) -v" \
+		CFLAGS="$(CFLAGS) -v -D_XOPEN_SOURCE_EXTENDED" \
 		V=1 \
 		--enable-dependency-tracking
 
