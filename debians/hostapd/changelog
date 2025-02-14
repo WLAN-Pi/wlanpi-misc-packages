@@ -1,5 +1,5 @@
-hostapd (2.11-0wlanpi0) unstable; urgency=medium
+hostapd (2:2.11-0wlanpi0) unstable; urgency=medium
 
   * Initial WLAN Pi package for hostapd
 
- -- Josh Schmelzle <josh@joshschmelzle.com>  Sun, 26 Jan 2025 00:00:00 +0000
+ -- Josh Schmelzle <josh@joshschmelzle.com>  Fri, 14 Jan 2025 00:00:00 +0000
