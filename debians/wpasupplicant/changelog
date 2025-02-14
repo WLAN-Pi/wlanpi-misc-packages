@@ -1,4 +1,4 @@
-wpasupplicant (2.11-0wlanpi0) unstable; urgency=medium
+wpasupplicant (2:2.11-0wlanpi0) unstable; urgency=medium
 
   * Initial WLAN Pi package for wpa_supplicant
 
