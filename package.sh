@@ -169,8 +169,9 @@ build_packages()
 
         # Get upstream version. E.g. version 1.2.3-4wlanpi1 will be 1.2.3
         current_version="$(cd ${package_path}; dpkg-parsechangelog --show-field Version)"
-        current_upstream_version=${current_version%%-*}
-        
+        current_version_no_epoch=${current_version#*:}
+        current_upstream_version=${current_version_no_epoch%%-*}
+
         # Debian build version. E.g. 1.2.3-4wlanpi1 will be 4
         current_deb_version=${current_version%wlanpi*}
         current_deb_version=${current_deb_version#*-}
@@ -180,10 +181,10 @@ build_packages()
         log "info" "current_upstream_version: ${current_upstream_version}"
 
         deb_version="1"
-        if $(dpkg --compare-versions "${package_version}" eq "${current_upstream_version}"); then
+        if $(dpkg --compare-versions "${package_version}" eq "${current_upstream_version#*:}"); then
             log "warn" "Upstream version is the same as last built. Incrementing debian build number."
             deb_version=$((current_deb_version+1))
-        elif $(dpkg --compare-versions "${package_version}" lt "${current_upstream_version}"); then
+        elif $(dpkg --compare-versions "${package_version}" lt "${current_upstream_version#*:}"); then
             log "warn" "Trying to build an old version of upstream source. Please check version information. Skipping build."
             continue
         fi
