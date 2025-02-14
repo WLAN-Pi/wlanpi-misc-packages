@@ -196,12 +196,20 @@ build_packages()
             echo "GITHUB_OUTPUT is not set or not writable"
         fi
 
-        log "Using version ${package_version} for ${package_name}"
-        (cd "${package_path}"; dch -v "${package_version}" -D "${BUILD_DISTRO}" --force-distribution "${package_name} version ${package_version}")
+        current_epoch=""
+        if [[ "${current_version}" == *":"* ]]; then
+            current_epoch="${current_version%%:*}:"
+        fi
+
+        full_package_version="${current_epoch}${package_version}"
+
+        log "Using version ${full_package_version} for ${package_name}"
+        (cd "${package_path}"; dch -v "${full_package_version}" -D "${BUILD_DISTRO}" --force-distribution "${package_name} version ${full_package_version}")
+
         cp "${package_path}/debian/changelog" "${package_debian_path}/changelog"
 
         git add "${package_debian_path}/changelog"
-        echo "Packaged ${package_name} version ${package_version}" >> "${COMMIT_MSG_FILE}"
+        echo "Packaged ${package_name} version ${full_package_version}" >> "${COMMIT_MSG_FILE}"
 
         log "ok" "Build Debian package for (${BUILD_ARCH})"
         (
