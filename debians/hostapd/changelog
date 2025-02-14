@@ -1,3 +1,9 @@
+hostapd (2:2.11-1wlanpi1) bookworm; urgency=medium
+
+  * hostapd version 2:2.11-1wlanpi1
+
+ -- Daniel Finimundi <daniel@finimundi.com>  Fri, 14 Feb 2025 08:22:20 +0000
+
 hostapd (2:2.11-0wlanpi0) unstable; urgency=medium
 
   * Initial WLAN Pi package for hostapd
