@@ -1,0 +1,28 @@
+dumpcap-minimal
+==============
+
+This package provides the dumpcap binary from Wireshark with minimal dependencies.
+
+Usage:
+------
+To capture packets:
+  dumpcap -i <interface> -w <output-file>
+
+For more options:
+  dumpcap -h
+
+Permissions:
+-----------
+To capture packets as a non-root user:
+1. Make sure you're in the wireshark group:
+   sudo usermod -a -G wireshark $(whoami)
+2. Log out and log back in completely
+3. Verify with the "groups" command that wireshark appears in the list
+
+Troubleshooting:
+--------------
+If you see "You don't have permission to capture" errors:
+1. Verify you're in the wireshark group
+2. Check capabilities with: getcap /usr/bin/dumpcap
+3. If necessary, restore capabilities with:
+   sudo setcap cap_net_raw,cap_net_admin=ep /usr/bin/dumpcap

@@ -1,0 +1,7 @@
+dumpcap-minimal (1.0.0) stable; urgency=medium
+
+  * Initial release
+  * Packaged dumpcap from wireshark-common
+  * Added wrapper script for permission handling
+
+ -- Josh Schmelzle <josh@joshschmelzle.com>  Fri, 18 Apr 2025 13:58:54 -0500

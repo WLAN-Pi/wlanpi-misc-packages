@@ -1,0 +1,16 @@
+#!/bin/bash
+setcap cap_net_raw,cap_net_admin=ep /usr/bin/dumpcap
+
+chown root:wireshark /usr/bin/dumpcap
+chmod 750 /usr/bin/dumpcap
+
+echo "--------------------------------------------------------"
+echo "dumpcap-minimal has been installed"
+echo ""
+echo "To allow non-root users to capture packets, add them to"
+echo "the wireshark group with:"
+echo "  sudo usermod -a -G wireshark USERNAME"
+echo ""
+echo "Then log out and log back in for the changes to take effect."
+echo "--------------------------------------------------------"
+exit 0

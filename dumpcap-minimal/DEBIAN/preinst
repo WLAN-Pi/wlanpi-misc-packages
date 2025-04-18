@@ -1,0 +1,5 @@
+#!/bin/bash
+if ! getent group wireshark > /dev/null; then
+  addgroup --system wireshark
+fi
+exit 0

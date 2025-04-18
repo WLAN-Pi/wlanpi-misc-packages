@@ -1,0 +1,11 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: dumpcap-minimal
+Source: https://www.wireshark.org/
+
+Files: *
+Copyright: 2025 Josh Schmelzle <josh@joshschmelzle.com>
+License: GPL-2+
+
+Files: usr/bin/dumpcap
+Copyright: 1998-2023 The Wireshark developers
+License: GPL-2+
