@@ -5,7 +5,7 @@ Priority: optional
 Architecture: arm64
 Depends: libpcap0.8, libcap2, libz1, libnl-genl-3-200, libnl-3-200, libglib2.0-0, libwsutil14
 Maintainer: Josh Schmelzle <josh@joshschmelzle.com>
-Homepage: https://github.com/joshschmelzle/dumpcap-minimal
+Homepage: https://github.com/WLAN-Pi/wlanpi-misc-packages
 Description: Minimal package containing only dumpcap
  This package provides only the dumpcap binary from wireshark-common
  with minimal dependencies for network packet capture.
