@@ -1,8 +1,15 @@
 #!/bin/bash
-setcap cap_net_raw,cap_net_admin=ep /usr/bin/dumpcap
+
+if ! setcap cap_net_raw,cap_net_admin=ep /usr/bin/dumpcap; then
+    echo "Warning: Could not set capabilities on dumpcap."
+    echo "You may need to run the following command after booting:"
+    echo "sudo setcap cap_net_raw,cap_net_admin=ep /usr/bin/dumpcap"
+fi
 
 chown root:wireshark /usr/bin/dumpcap
 chmod 750 /usr/bin/dumpcap
+
+systemctl enable dumpcap-setup.service
 
 echo "--------------------------------------------------------"
 echo "dumpcap-minimal has been installed"

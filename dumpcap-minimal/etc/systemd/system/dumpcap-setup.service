@@ -1,0 +1,11 @@
+[Unit]
+Description=Set up dumpcap capabilities
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/bin/sh -c "setcap cap_net_raw,cap_net_admin=ep /usr/bin/dumpcap"
+RemainAfterExit=true
+
+[Install]
+WantedBy=multi-user.target
