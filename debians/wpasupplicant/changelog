@@ -1,3 +1,9 @@
+wpasupplicant (2:2.11-2wlanpi1) bookworm; urgency=medium
+
+  * wpasupplicant version 2:2.11-2wlanpi1
+
+ -- Daniel Finimundi <daniel@finimundi.com>  Wed, 23 Jul 2025 17:15:40 +0000
+
 wpasupplicant (2:2.11-1wlanpi1) bookworm; urgency=medium
 
   * wpasupplicant version 2:2.11-1wlanpi1
