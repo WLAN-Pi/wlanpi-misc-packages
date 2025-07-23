@@ -69,7 +69,7 @@ index 000000000..3e9656c20
 +CONFIG_IEEE80211R=y
 +
 +# Debugging
-+#CONFIG_DEBUG_FILE=y
++CONFIG_DEBUG_FILE=y
 +#CONFIG_DEBUG_SYSLOG=y
 +
 +# Modern Wi-Fi features
