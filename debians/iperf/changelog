@@ -1,11 +1,5 @@
-iperf (65a780c-1wlanpi1) unstable; urgency=medium
+iperf (2:2.1.9-0wlanpi0) unstable; urgency=medium
 
-  * iperf2 version 65a780c-1wlanpi1
+  * Initial WLAN Pi package for iperf
 
- -- Daniel Finimundi <daniel@finimundi.com>  Tue, 28 Jan 2025 08:49:36 +0000
-
-iperf (2.1.9-0wlanpi0) unstable; urgency=medium
-
-  * Initial WLAN Pi package for iperf2
-
- -- Josh Schmelzle <josh@joshschmelzle.com>  Sun, 26 Jan 2025 00:00:00 +0000
+ -- Josh Schmelzle <josh@joshschmelzle.com>  Wed, 07 Jul 2025 00:00:00 +0000
