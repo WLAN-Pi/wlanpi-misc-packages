@@ -15,7 +15,8 @@ NUM_CORES=$(($(nproc)/2))
 EXEC_FUNC=""
 BUILD_ALL="0"
 BUILD_PACKAGE=""
-DISTRO="bullseye"
+BUILD_DISTRO="bookworm"
+DISTRO="bookworm"
 export DEBFULLNAME="Josh Schmelzle"
 export DEBEMAIL="josh@joshschmelzle.com"
 
@@ -76,6 +77,7 @@ process_options()
                 ;;
             --distro )
                 BUILD_DISTRO="$2"
+                DISTRO="$2"
                 shift 2
                 ;;
             -- )
@@ -214,13 +216,6 @@ build_packages()
         fi
         package_version="${package_version}-${deb_version}wlanpi1"
 
-        if [[ -n "${GITHUB_OUTPUT}" ]] && [[ -w "${GITHUB_OUTPUT}" ]]; then
-            echo "package-version=${package_version}" >> $GITHUB_OUTPUT
-            echo "deb-package=${package_name}_${full_package_version}_${BUILD_ARCH}.deb" >> $GITHUB_OUTPUT
-        else
-            echo "GITHUB_OUTPUT is not set or not writable"
-        fi
-
         current_epoch=""
         if [[ "${current_version}" == *":"* ]]; then
             current_epoch="${current_version%%:*}:"
@@ -228,12 +223,28 @@ build_packages()
 
         full_package_version="${current_epoch}${package_version}"
 
-        log "Using version ${full_package_version} for ${package_name}"
-        (cd "${package_path}"; dch -v "${full_package_version}" -D "${BUILD_DISTRO}" --force-distribution "${package_name} version ${full_package_version}")
+        if [[ -n "${GITHUB_OUTPUT}" ]] && [[ -w "${GITHUB_OUTPUT}" ]]; then
+            echo "package-version=${full_package_version}" >> $GITHUB_OUTPUT
+            echo "deb-package=${package_name}_${full_package_version}_${BUILD_ARCH}.deb" >> $GITHUB_OUTPUT
+        else
+            echo "GITHUB_OUTPUT is not set or not writable"
+        fi
 
+        log "Using version ${full_package_version} for ${package_name}"
+
+        if (cd "${package_path}"; dch -v "${full_package_version}" -D "${BUILD_DISTRO}" --force-distribution "${package_name} version ${full_package_version}")
+            log "ok" "dch command succeeded"
+        else
+            log "error" "dch command failed"
+            exit 1
+        fi
+
+        log "info" "Copying changelog from ${package_path}/debian/changelog to ${package_debian_path}/changelog"
         cp "${package_path}/debian/changelog" "${package_debian_path}/changelog"
 
+        log "info" "Adding changelog to git"
         git add "${package_debian_path}/changelog"
+
         echo "Packaged ${package_name} version ${full_package_version}" >> "${COMMIT_MSG_FILE}"
 
         log "ok" "Build Debian package for (${BUILD_ARCH})"
