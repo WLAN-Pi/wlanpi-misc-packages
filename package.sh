@@ -16,8 +16,8 @@ EXEC_FUNC=""
 BUILD_ALL="0"
 BUILD_PACKAGE=""
 DISTRO="bullseye"
-export DEBFULLNAME="Daniel Finimundi"
-export DEBEMAIL="daniel@finimundi.com"
+export DEBFULLNAME="Josh Schmelzle"
+export DEBEMAIL="josh@joshschmelzle.com"
 
 mkdir -p "${LOG_PATH}"
 
@@ -156,10 +156,34 @@ build_packages()
             # Try direct ref sanitization first
             upstream_version=$(sanitize_version "${ref}")
 
+            # Try to get version from git tag
+            if (cd "${package_path}" && git describe --tags --exact-match HEAD >/dev/null 2>&1); then
+                upstream_version="$(cd ${package_path}; git describe --tags --exact-match HEAD 2>/dev/null)"
+                upstream_version=$(sanitize_version "$upstream_version")
+                log "info" "Using git tag version for ${package_name}: ${upstream_version}"
+            fi
+
             # Fallback to git describe if needed
             if [ -z "$upstream_version" ] || [ "$upstream_version" == "0." ]; then
-                upstream_version="$(cd ${package_path}; git describe --tags --always 2>/dev/null)"
-                upstream_version=$(sanitize_version "$upstream_version")
+                git_version="$(cd ${package_path}; git describe --tags 2>/dev/null | sed 's/-g[0-9a-f]*$//' | sed 's/-[0-9]*$//' 2>/dev/null)"
+                if [ -n "$git_version" ] && [[ ! "$git_version" =~ ^[0-9a-f]{7,}$ ]]; then
+                    upstream_version=$(sanitize_version "$git_version")
+                    log "info" "Using git describe version for ${package_name}: ${upstream_version}"
+                fi
+            fi
+            # Fallback use changelog version
+            if [ -z "$upstream_version" ] || [ "$upstream_version" == "0." ]; then
+                changelog_version="$(cd ${package_path}; dpkg-parsechangelog --show-field Version 2>/dev/null)"
+                if [ -n "$changelog_version" ]; then
+                    # Extract just the upstream version (remove epoch and debian revision)
+                    changelog_version_no_epoch=${changelog_version#*:}
+                    upstream_version=${changelog_version_no_epoch%%-*}
+                    log "info" "Using changelog version for ${package_name}: ${upstream_version}"
+                else
+                    # Last resort: sanitize the ref itself
+                    upstream_version=$(sanitize_version "${ref}")
+                    log "warn" "Falling back to sanitized ref for ${package_name}: ${upstream_version}"
+                fi
             fi
         fi
 
@@ -192,6 +216,7 @@ build_packages()
 
         if [[ -n "${GITHUB_OUTPUT}" ]] && [[ -w "${GITHUB_OUTPUT}" ]]; then
             echo "package-version=${package_version}" >> $GITHUB_OUTPUT
+            echo "deb-package=${package_name}_${full_package_version}_${BUILD_ARCH}.deb" >> $GITHUB_OUTPUT
         else
             echo "GITHUB_OUTPUT is not set or not writable"
         fi
