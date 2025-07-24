@@ -12,7 +12,7 @@ on:
           - all
           - iw
           - wlanpi-linux-firmware
-          - iperf2
+          - iperf
           - iperf3
           - wavemon
           - wpasupplicant
@@ -28,7 +28,7 @@ jobs:
       - id: set-matrix
         run: |
           if [ "${{ github.event.inputs.packages }}" = "all" ]; then
-            echo 'matrix={"package": ["iw", "wlanpi-linux-firmware", "iperf2", "iperf3", "wavemon", "wpasupplicant", "hostapd"], "distro": ["bullseye", "bookworm"], "arch": ["arm64"]}' >> $GITHUB_OUTPUT
+            echo 'matrix={"package": ["iw", "wlanpi-linux-firmware", "iperf", "iperf3", "wavemon", "wpasupplicant", "hostapd"], "distro": ["bullseye", "bookworm"], "arch": ["arm64"]}' >> $GITHUB_OUTPUT
           else
             echo 'matrix={"package": ["${{ github.event.inputs.packages }}"], "distro": ["bullseye", "bookworm"], "arch": ["arm64"]}' >> $GITHUB_OUTPUT
           fi
