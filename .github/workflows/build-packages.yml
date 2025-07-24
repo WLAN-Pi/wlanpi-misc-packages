@@ -107,7 +107,7 @@ jobs:
           delete-branch: true
           title: Update changelog for ${{ matrix.package }} version ${{ steps.build-package.outputs.package-version }}
           body: Package ${{ matrix.package }} built on version ${{ steps.build-package.outputs.package-version }}.
-          assignees: danielmundi
+          assignees: joshschmelzle
 
   slack-workflow-status:
     if: ${{ always() && (github.repository_owner == 'WLAN-Pi') && (! github.event.pull_request.head.repo.fork) }}
