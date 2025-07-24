@@ -232,7 +232,7 @@ build_packages()
 
         log "Using version ${full_package_version} for ${package_name}"
 
-        if (cd "${package_path}"; dch -v "${full_package_version}" -D "${BUILD_DISTRO}" --force-distribution "${package_name} version ${full_package_version}")
+        if (cd "${package_path}"; dch -v "${full_package_version}" -D "${BUILD_DISTRO}" --force-distribution "${package_name} version ${full_package_version}"); then
             log "ok" "dch command succeeded"
         else
             log "error" "dch command failed"
