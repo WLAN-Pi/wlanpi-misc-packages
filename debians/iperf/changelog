@@ -1,4 +1,4 @@
-iperf (2.1.9-0wlanpi0) unstable; urgency=medium
+iperf (2.2.0-0wlanpi0) unstable; urgency=medium
 
   * Initial WLAN Pi package for iperf
 
