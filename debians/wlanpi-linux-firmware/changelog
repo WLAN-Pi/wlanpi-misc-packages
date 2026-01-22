@@ -1,3 +1,9 @@
+wlanpi-linux-firmware (1.20260115-1wlanpi1) trixie; urgency=medium
+
+  * wlanpi-linux-firmware version 1.20260115-1wlanpi1
+
+ -- Josh Schmelzle <josh@joshschmelzle.com>  Thu, 22 Jan 2026 04:25:19 +0000
+
 wlanpi-linux-firmware (1.20250115-1wlanpi1) bookworm; urgency=medium
 
   * wlanpi-linux-firmware version 1.20250115-1wlanpi1
