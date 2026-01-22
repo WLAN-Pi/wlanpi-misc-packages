@@ -28,9 +28,9 @@ jobs:
       - id: set-matrix
         run: |
           if [ "${{ github.event.inputs.packages }}" = "all" ]; then
-            echo 'matrix={"package": ["iw", "wlanpi-linux-firmware", "iperf", "iperf3", "wavemon", "wpasupplicant", "hostapd"], "distro": ["bullseye", "bookworm"], "arch": ["arm64"]}' >> $GITHUB_OUTPUT
+            echo 'matrix={"package": ["iw", "wlanpi-linux-firmware", "iperf", "iperf3", "wavemon", "wpasupplicant", "hostapd"], "distro": ["bookworm", "trixie"], "arch": ["arm64"]}' >> $GITHUB_OUTPUT
           else
-            echo 'matrix={"package": ["${{ github.event.inputs.packages }}"], "distro": ["bullseye", "bookworm"], "arch": ["arm64"]}' >> $GITHUB_OUTPUT
+            echo 'matrix={"package": ["${{ github.event.inputs.packages }}"], "distro": ["bookworm", "trixie"], "arch": ["arm64"]}' >> $GITHUB_OUTPUT
           fi
 
   build:
@@ -64,7 +64,7 @@ jobs:
       - name: Check debootstrap logs
         if: failure()
         run: |
-          for distro in bullseye bookworm; do
+          for distro in bookworm trixie; do
             logfile="/srv/chroot/${distro}-${{ matrix.arch }}-sbuild/debootstrap/debootstrap.log"
             if [ -f "$logfile" ]; then
               echo "=== $distro logs ==="
