@@ -1,4 +1,4 @@
-wlanpi-linux-firmware (1.20250115-1wlanpi1) bullseye, bookworm; urgency=medium
+wlanpi-linux-firmware (1.20250115-1wlanpi1) bookworm; urgency=medium
 
   * wlanpi-linux-firmware version 1.20250115-1wlanpi1
 
@@ -45,3 +45,4 @@ wlanpi-linux-firmware (0.1-1wlanpi) bullseye; urgency=medium
   * Initial release.
 
  -- Daniel Finimundi <daniel@finimundi.com>  Sat, 22 Jan 2022 03:03:19 +0000
+
