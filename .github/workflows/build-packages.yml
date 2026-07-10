@@ -44,7 +44,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Install dependencies
         run: |
@@ -74,13 +74,13 @@ jobs:
 
       - name: Upload debootstrap logs 
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: debootstrap-${{ matrix.package }}-${{ matrix.distro }}-${{ matrix.arch }}-logs
           path: /srv/chroot/${{ matrix.distro }}-${{ matrix.arch }}-sbuild/debootstrap/debootstrap.log
 
       - name: Upload package ${{ matrix.package }} to GitHub
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: ${{ steps.build-package.outputs.deb-package != '' }}
         with:
           name: ${{ matrix.package }}-${{ matrix.arch }}-${{ matrix.distro }}-${{ steps.build-package.outputs.artifact-version }}
@@ -97,7 +97,7 @@ jobs:
           packagecloud-token: ${{ secrets.PACKAGECLOUD_TOKEN }}
 
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v3
+        uses: peter-evans/create-pull-request@v8
         if: ${{ steps.build-package.outputs.deb-package != '' && (github.repository_owner == 'WLAN-Pi') && (! github.event.pull_request.head.repo.fork) }}
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
