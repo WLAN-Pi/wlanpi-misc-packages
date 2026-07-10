@@ -1,3 +1,9 @@
+iperf3 (3.21-1wlanpi1) trixie; urgency=medium
+
+  * iperf3 version 3.21-1wlanpi1
+
+ -- Josh Schmelzle <josh@joshschmelzle.com>  Fri, 10 Jul 2026 02:11:27 +0000
+
 iperf3 (3.18-0wlanpi0) unstable; urgency=medium
 
   * Initial WLAN Pi package for iperf3
