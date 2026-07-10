@@ -15,8 +15,8 @@ NUM_CORES=$(($(nproc)/2))
 EXEC_FUNC=""
 BUILD_ALL="0"
 BUILD_PACKAGE=""
-BUILD_DISTRO="bookworm"
-DISTRO="bookworm"
+BUILD_DISTRO="trixie"
+DISTRO="trixie"
 export DEBFULLNAME="Josh Schmelzle"
 export DEBEMAIL="josh@joshschmelzle.com"
 
