@@ -1,3 +1,9 @@
+iw (6.17-1wlanpi1) trixie; urgency=medium
+
+  * iw version 6.17-1wlanpi1
+
+ -- Josh Schmelzle <josh@joshschmelzle.com>  Fri, 10 Jul 2026 01:53:29 +0000
+
 iw (6.9.12.ga0a7dde-1wlanpi1) bullseye; urgency=medium
 
   * iw version 6.9.12.ga0a7dde-1wlanpi1
