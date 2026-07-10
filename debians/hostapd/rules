@@ -40,10 +40,10 @@ execute_after_dh_install:
 
 	install --mode=755 -D debian/hostapd.init debian/hostapd/etc/init.d/hostapd
 
-	install --mode=644 -D debian/hostapd.service \
-		debian/hostapd/lib/systemd/system/hostapd.service
-	install --mode=644 -D debian/hostapd@.service \
-		debian/hostapd/lib/systemd/system/hostapd@.service
+	# systemd units are installed by dh_installsystemd to the canonical
+	# /usr/lib/systemd/system. Installing them to /lib/systemd/system as
+	# well shipped the same files through the merged-/usr alias, which
+	# trixie's dpkg rejects at unpack.
 
 	install --mode=644 -D README debian/hostapd/usr/share/doc/hostapd/README.gz
 	install --mode=644 -D debian/hostapd.README.Debian debian/hostapd/usr/share/doc/hostapd/README.Debian
