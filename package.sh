@@ -225,6 +225,8 @@ build_packages()
 
         if [[ -n "${GITHUB_OUTPUT}" ]] && [[ -w "${GITHUB_OUTPUT}" ]]; then
             echo "package-version=${full_package_version}" >> $GITHUB_OUTPUT
+            # Epoch-less version for GitHub artifact names, which reject ':'
+            echo "artifact-version=${full_package_version#*:}" >> $GITHUB_OUTPUT
             echo "deb-package=${package_name}_${full_package_version}_${BUILD_ARCH}.deb" >> $GITHUB_OUTPUT
         else
             echo "GITHUB_OUTPUT is not set or not writable"
@@ -253,6 +255,12 @@ build_packages()
             # git archive --format=tar --prefix="${package_name}-${upstream_version}/" HEAD | xz > "../${package_name}_${upstream_version}.orig.tar.xz"
             git archive --format=tar HEAD | xz -T0 > "../${package_name}_${package_version%-*}.orig.tar.xz"
             INPUTS_ARCH=${BUILD_ARCH} INPUTS_DISTRO="${BUILD_DISTRO}" INPUTS_RUN_LINTIAN="false" INPUTS_EXTRA_DEPENDS="${EXTRA_DEPENDS}" "${SCRIPT_PATH}"/sbuild-debian-package/build.sh
+            # sbuild failures (e.g. unsatisfiable build deps) don't propagate out
+            # of build.sh, so verify a .deb was actually produced
+            if [ -z "$(find . -maxdepth 1 -name '*.deb' -print -quit)" ]; then
+                log "error" "No .deb produced for ${package_name}; sbuild failed"
+                exit 1
+            fi
             find . -name "*.deb" -exec cp {} "${SCRIPT_PATH}" \;
         )
         package_built="1"
