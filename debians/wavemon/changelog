@@ -1,3 +1,9 @@
+wavemon (0.9.7-1wlanpi1) trixie; urgency=medium
+
+  * wavemon version 0.9.7-1wlanpi1
+
+ -- Josh Schmelzle <josh@joshschmelzle.com>  Fri, 10 Jul 2026 01:53:32 +0000
+
 wavemon (0.9.6-3wlanpi1) bookworm; urgency=medium
 
   * wavemon version 0.9.6-1wlanpi1
