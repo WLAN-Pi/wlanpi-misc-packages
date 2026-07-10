@@ -83,7 +83,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: ${{ steps.build-package.outputs.deb-package != '' }}
         with:
-          name: ${{ matrix.package }}-${{ matrix.arch }}-${{ matrix.distro }}-${{ steps.build-package.outputs.package-version }}
+          name: ${{ matrix.package }}-${{ matrix.arch }}-${{ matrix.distro }}-${{ steps.build-package.outputs.artifact-version }}
           path: ${{ steps.build-package.outputs.deb-package }}
 
       - name: Upload arm64 package to packagecloud debian/${{ matrix.distro }} 

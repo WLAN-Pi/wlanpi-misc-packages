@@ -6,7 +6,7 @@
 *.tar.xz
 /iw
 /wavemon
-/iperf2
+/iperf
 /iperf3
 /hostapd
 /wpasupplicant
