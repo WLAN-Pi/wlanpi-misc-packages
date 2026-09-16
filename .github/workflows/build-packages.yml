@@ -1,4 +1,4 @@
-name: Build misc packages
+name: Build and release misc packages
 
 on:
   # Allow manual runs of workflow from Actions tab
