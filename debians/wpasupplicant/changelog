@@ -1,3 +1,9 @@
+wpasupplicant (2:2.12-2wlanpi1) trixie; urgency=medium
+
+  * wpasupplicant version 2:2.12-2wlanpi1
+
+ -- Josh Schmelzle <josh@joshschmelzle.com>  Wed, 16 Sep 2026 20:16:14 +0000
+
 wpasupplicant (2:2.12-1wlanpi1) trixie; urgency=medium
 
   * wpasupplicant version 2:2.12-1wlanpi1
