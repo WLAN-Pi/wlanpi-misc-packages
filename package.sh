@@ -116,6 +116,8 @@ build_packages()
 
     echo "" > "${COMMIT_MSG_FILE}"
 
+    package_error="0"
+
     for package_conf in "${SCRIPT_PATH}"/*.conf; do
         unset package_name package_url package_ref package_version package_version_type
         source "${package_conf}"
@@ -211,7 +213,8 @@ build_packages()
             log "warn" "Upstream version is the same as last built. Incrementing debian build number."
             deb_version=$((current_deb_version+1))
         elif $(dpkg --compare-versions "${package_version}" lt "${current_upstream_version#*:}"); then
-            log "warn" "Trying to build an old version of upstream source. Please check version information. Skipping build."
+            log "error" "Trying to build an old version of upstream source for ${package_name} (${package_version} < ${current_upstream_version#*:}). Please check the package_ref in ${package_name}.conf."
+            package_error="1"
             continue
         fi
         package_version="${package_version}-${deb_version}wlanpi1"
@@ -269,6 +272,10 @@ build_packages()
     # Only commit if we actually built something
     if [ "${package_built}" == "1" ]; then
         git_commit
+    fi
+
+    if [ "${package_error}" == "1" ]; then
+        exit 1
     fi
 }
 
