@@ -1,3 +1,9 @@
+hostapd (2:2.12-2wlanpi1) trixie; urgency=medium
+
+  * hostapd version 2:2.12-2wlanpi1
+
+ -- Josh Schmelzle <josh@joshschmelzle.com>  Wed, 16 Sep 2026 20:21:23 +0000
+
 hostapd (2:2.12-1wlanpi1) trixie; urgency=medium
 
   * hostapd version 2:2.12-1wlanpi1
