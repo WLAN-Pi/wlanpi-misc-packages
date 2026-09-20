@@ -28,9 +28,9 @@ jobs:
       - id: set-matrix
         run: |
           if [ "${{ github.event.inputs.packages }}" = "all" ]; then
-            echo 'matrix={"package": ["iw", "wlanpi-linux-firmware", "iperf", "iperf3", "wavemon", "wpasupplicant", "hostapd"], "distro": ["trixie"], "arch": ["arm64"]}' >> $GITHUB_OUTPUT
+            echo 'matrix={"package": ["iw", "wlanpi-linux-firmware", "iperf", "iperf3", "wavemon", "wpasupplicant", "hostapd"], "distro": ["trixie"], "arch": ["arm64"]}' >> "$GITHUB_OUTPUT"
           else
-            echo 'matrix={"package": ["${{ github.event.inputs.packages }}"], "distro": ["trixie"], "arch": ["arm64"]}' >> $GITHUB_OUTPUT
+            echo 'matrix={"package": ["${{ github.event.inputs.packages }}"], "distro": ["trixie"], "arch": ["arm64"]}' >> "$GITHUB_OUTPUT"
           fi
 
   build:
