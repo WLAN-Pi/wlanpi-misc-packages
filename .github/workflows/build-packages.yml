@@ -19,6 +19,11 @@ on:
           - hostapd
         default: all
 
+permissions:
+  contents: write
+  pull-requests: write
+  actions: read
+
 jobs:
   matrix-prep:
     runs-on: ubuntu-24.04-arm
