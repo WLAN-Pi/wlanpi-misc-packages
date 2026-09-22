@@ -24,6 +24,13 @@ execute_after_dh_install:
 		debian/wpasupplicant/etc/dbus-1/system.d/wpa_supplicant.conf
 	install --mode=644 -D wpa_supplicant/dbus/fi.w1.wpa_supplicant1.service \
 		debian/wpasupplicant/usr/share/dbus-1/system-services/fi.w1.wpa_supplicant1.service
+	# The generated file uses the build prefix (/usr/local/sbin) and references
+	# a wpa_supplicant.service unit we do not ship, so D-Bus activation fails.
+	# Point Exec at the installed binary and drop SystemdService so dbus spawns
+	# the daemon on demand.
+	sed -i -e 's|^Exec=.*|Exec=/sbin/wpa_supplicant -u|' \
+		-e '/^SystemdService=/d' \
+		debian/wpasupplicant/usr/share/dbus-1/system-services/fi.w1.wpa_supplicant1.service
 
 execute_before_dh_clean:
 		rm -rf debian/wpasupplicant-udeb
