@@ -3,20 +3,16 @@
 PARSED_ARGS=$(getopt -o cfhaj: --long clean,force-sync,help,all --long arch:,package:,distro: -- "$@")
 VALID_ARGS=$?
 
-SCRIPT_PATH="$(dirname $(readlink -f "$0"))"
-CACHE_PATH="${SCRIPT_PATH}/source"
+SCRIPT_PATH="$(dirname "$(readlink -f "$0")")"
 LOG_PATH="${SCRIPT_PATH}/logs"
 COMMIT_MSG_FILE="${SCRIPT_PATH}/commit_msg.txt"
 
 BUILD_ARCH="arm64"
 CLEAN_PACKAGE="1"
 FORCE_SYNC="0"
-NUM_CORES=$(($(nproc)/2))
-EXEC_FUNC=""
 BUILD_ALL="0"
 BUILD_PACKAGE=""
 BUILD_DISTRO="trixie"
-DISTRO="trixie"
 export DEBFULLNAME="Josh Schmelzle"
 export DEBEMAIL="josh@joshschmelzle.com"
 
@@ -33,6 +29,8 @@ usage()
                     [ -h | --help ]"
 }
 
+# The options are set inside the function by "eval set -- ${PARSED_ARGS}".
+# shellcheck disable=SC2120
 process_options()
 {
     if [ "$VALID_ARGS" != 0 ]; then
@@ -57,10 +55,8 @@ process_options()
                 shift 1
                 ;;
             -j )
-                case "$2" in
-                    x|X) NUM_CORES=$(nproc) ;;
-                    *) NUM_CORES="$2" ;;
-                esac
+                # Accepted for compatibility; the value was never used, so
+                # parallelism is left to sbuild.
                 shift 2
                 ;;
             -h | --help )
@@ -77,11 +73,9 @@ process_options()
                 ;;
             --distro )
                 BUILD_DISTRO="$2"
-                DISTRO="$2"
                 shift 2
                 ;;
             -- )
-                EXEC_FUNC="$2"
                 shift 2
                 break
                 ;;
@@ -119,7 +113,10 @@ build_packages()
     package_error="0"
 
     for package_conf in "${SCRIPT_PATH}"/*.conf; do
-        unset package_name package_url package_ref package_version package_version_type
+        # Each *.conf sets these with "local"; reset them so a missing key can't
+        # leak in from the previous package.
+        local package_name="" package_url="" package_ref="" package_version="" package_version_type=""
+        # shellcheck source=/dev/null
         source "${package_conf}"
 
         EXTRA_DEPENDS=""
@@ -138,7 +135,7 @@ build_packages()
         package_path="${SCRIPT_PATH}/${package_name}"
         package_debian_path="${SCRIPT_PATH}/debians/${package_name}"
 
-        download_source "${package_url}" "${package_ref}" "${package_name}" "${package_version_type}"
+        download_source "${package_url}" "${package_ref}" "${package_name}"
 
         # Copy debian files to source dir with proper permissions
         log "ok" "Copying debian files"
@@ -191,7 +188,7 @@ build_packages()
             fi
         fi
 
-        if $(dpkg --compare-versions "${upstream_version}" gt "${package_version}"); then
+        if dpkg --compare-versions "${upstream_version}" gt "${package_version}"; then
             package_version="${upstream_version}"
         fi
 
@@ -209,10 +206,10 @@ build_packages()
         log "info" "current_upstream_version: ${current_upstream_version}"
 
         deb_version="1"
-        if $(dpkg --compare-versions "${package_version}" eq "${current_upstream_version#*:}"); then
+        if dpkg --compare-versions "${package_version}" eq "${current_upstream_version#*:}"; then
             log "warn" "Upstream version is the same as last built. Incrementing debian build number."
             deb_version=$((current_deb_version+1))
-        elif $(dpkg --compare-versions "${package_version}" lt "${current_upstream_version#*:}"); then
+        elif dpkg --compare-versions "${package_version}" lt "${current_upstream_version#*:}"; then
             log "error" "Trying to build an old version of upstream source for ${package_name} (${package_version} < ${current_upstream_version#*:}). Please check the package_ref in ${package_name}.conf."
             package_error="1"
             continue
@@ -298,7 +295,6 @@ download_source()
     local url="$1"
     local ref="$2"
     local target_package="$3"
-    local shallow="$4"
     local target_path="${SCRIPT_PATH}/${target_package}"
     local fetch_depth="--depth=1"
 
