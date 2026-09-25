@@ -13,3 +13,14 @@ override_dh_auto_configure:
 	./configure --prefix=/usr
 
 override_dh_auto_test:
+
+execute_after_dh_install:
+	install -D -m 644 debian/iperf2.ufw debian/iperf/etc/ufw/applications.d/iperf2
+
+override_dh_installsystemd:
+	# Shipped disabled so upgrades on images without iperf2 servers (lite)
+	# don't start one. The full image enables iperf2 and iperf2-ufw; iperf2-udp
+	# stays off and starts on demand (ufw already allows 5002/udp).
+	dh_installsystemd --no-enable --name=iperf2
+	dh_installsystemd --no-enable --name=iperf2-udp
+	dh_installsystemd --no-enable --name=iperf2-ufw

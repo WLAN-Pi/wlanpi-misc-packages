@@ -1,0 +1,19 @@
+#!/bin/sh
+set -e
+
+# Older WLAN Pi images enabled an unpackaged iperf3.service under
+# network-online.target. The packaged unit is wanted by multi-user.target.
+rm -f /etc/systemd/system/network-online.target.wants/iperf3.service
+
+# Upgrading from a version without units: migrate the firewall only if the old
+# image's literal 5201 rule is still there. An admin who removed it keeps the
+# port closed.
+if [ "$1" = configure ] && [ -n "$2" ] && dpkg --compare-versions "$2" lt 3.21-2wlanpi1~ \
+    && ! grep -qxF '### tuple ### allow any 5201 0.0.0.0/0 any 0.0.0.0/0 in' /etc/ufw/user.rules 2>/dev/null; then
+    mkdir -p /var/lib/iperf3
+    touch /var/lib/iperf3/ufw-applied
+fi
+
+#DEBHELPER#
+
+exit 0

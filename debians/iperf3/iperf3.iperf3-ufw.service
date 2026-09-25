@@ -1,0 +1,25 @@
+# Open the iperf3 port once. Runs on install, or on first boot when the
+# package was installed in an image-build chroot. The marker keeps a rule the
+# user later deletes from coming back.
+#
+# ufw reads its rules before it takes its lock, so parallel ufw calls can
+# drop each other's rules. Run after every other ufw writer at boot.
+[Unit]
+Description=Open iperf3 port in ufw
+After=ufw.service wlanpi-first-boot.service
+After=wlanpi-core-ufw-first-boot.service wlanpi-mcp-ufw-first-boot.service
+After=iperf2-ufw.service
+ConditionPathExists=/usr/sbin/ufw
+ConditionPathExists=!/var/lib/iperf3/ufw-applied
+
+[Service]
+Type=oneshot
+StateDirectory=iperf3
+ExecStart=/usr/sbin/ufw allow iperf3
+# Drop the plain port rules older WLAN Pi images added for iperf3.
+ExecStart=-/usr/sbin/ufw delete allow 5201
+ExecStart=-/usr/sbin/ufw delete allow 5202
+ExecStart=/usr/bin/touch /var/lib/iperf3/ufw-applied
+
+[Install]
+WantedBy=multi-user.target
