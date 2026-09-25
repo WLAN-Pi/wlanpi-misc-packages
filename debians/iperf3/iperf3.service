@@ -1,0 +1,32 @@
+[Unit]
+Description=iperf3 server
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+# --idle-timeout is a backstop that resets a server left stuck "busy" by a
+# client that vanished mid-test. 60 s is a starting value.
+ExecStart=/usr/bin/iperf3 -s -i1 -p 5201 --idle-timeout 60
+Restart=always
+RestartSec=2
+DynamicUser=yes
+CapabilityBoundingSet=
+PrivateDevices=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectKernelLogs=yes
+ProtectControlGroups=yes
+ProtectClock=yes
+ProtectHostname=yes
+ProtectProc=invisible
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+RestrictNamespaces=yes
+RestrictRealtime=yes
+LockPersonality=yes
+MemoryDenyWriteExecute=yes
+SystemCallArchitectures=native
+SystemCallFilter=@system-service
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target
