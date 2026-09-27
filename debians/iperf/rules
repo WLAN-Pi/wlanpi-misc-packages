@@ -10,7 +10,9 @@ override_dh_auto_clean:
 	dh_auto_clean
 
 override_dh_auto_configure:
-	./configure --prefix=/usr
+	# Bound threads one client can make the server spawn (-P 16 --full-duplex
+	# needs 32); extra streams are refused cleanly.
+	./configure --prefix=/usr --with-max-threads-per-client=32
 
 override_dh_auto_test:
 

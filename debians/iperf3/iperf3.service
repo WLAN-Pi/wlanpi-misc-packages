@@ -4,9 +4,7 @@ After=network.target
 StartLimitIntervalSec=0
 
 [Service]
-# --idle-timeout is a backstop that resets a server left stuck "busy" by a
-# client that vanished mid-test. 60 s is a starting value.
-ExecStart=/usr/bin/iperf3 -s -i1 -p 5201 --idle-timeout 60
+ExecStart=/usr/bin/iperf3 -s -i1 -p 5201
 Restart=always
 RestartSec=2
 DynamicUser=yes
