@@ -1,3 +1,9 @@
+iperf3 (3.21-2wlanpi1) trixie; urgency=medium
+
+  * iperf3 version 3.21-2wlanpi1
+
+ -- Josh Schmelzle <josh@joshschmelzle.com>  Mon, 28 Sep 2026 19:39:41 +0000
+
 iperf3 (3.21-1wlanpi1) trixie; urgency=medium
 
   * iperf3 version 3.21-1wlanpi1
