@@ -1,0 +1,16 @@
+#!/bin/sh
+set -e
+
+# Full images before this package shipped units opened 5001 with a literal ufw
+# rule and never enabled iperf2. That rule marks such a device: enable the
+# server and let iperf2-ufw replace the rule with the profile. Lite images
+# never had it. Match the default line exactly so a rule an admin scoped is
+# left alone.
+if [ "$1" = configure ] && [ -n "$2" ] && dpkg --compare-versions "$2" lt 2.2.2-2wlanpi1~ \
+    && grep -qxF '### tuple ### allow any 5001 0.0.0.0/0 any 0.0.0.0/0 in' /etc/ufw/user.rules 2>/dev/null; then
+    deb-systemd-helper enable iperf2.service iperf2-ufw.service >/dev/null || true
+fi
+
+#DEBHELPER#
+
+exit 0

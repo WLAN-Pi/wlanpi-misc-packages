@@ -1,0 +1,4 @@
+[iperf3]
+title=iperf3 server
+description=iperf3 bandwidth test server (TCP and UDP 5201)
+ports=5201/tcp|5201/udp

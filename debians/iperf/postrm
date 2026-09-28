@@ -1,0 +1,16 @@
+#!/bin/sh
+set -e
+
+case "$1" in
+    remove)
+        # The profile is a conffile, so it is still present for ufw to resolve.
+        if command -v ufw >/dev/null 2>&1; then
+            ufw delete allow iperf2 >/dev/null 2>&1 || true
+        fi
+        rm -rf /var/lib/iperf
+        ;;
+esac
+
+#DEBHELPER#
+
+exit 0

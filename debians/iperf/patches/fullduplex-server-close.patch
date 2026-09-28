@@ -1,0 +1,102 @@
+Description: Close the shared socket after a server-side full-duplex test
+Author: Josh Schmelzle <josh@joshschmelzle.com>
+Forwarded: no
+Last-Update: 2026-09-26
+
+ On the server, InitSumReport never sets up the full-duplex barrier, so
+ fullduplex_stop_barrier returns 0 to both threads of a full-duplex stream,
+ EndJob tells neither to close, and the shared socket leaks (TCP and UDP).
+ After about 1020 streams the server stops accepting while still running.
+
+ On the server side the last thread out closes, using EndJob's existing
+ close_reference count; the Listener takes both references before starting
+ either thread. A server-side sender whose peer vanished mid burst-header
+ write left through FAIL_errno (thread_stop, no EndJob) and still leaked;
+ it now ends like the plain write path.
+---
+diff --git a/src/Client.cpp b/src/Client.cpp
+index a3f6b73..c3503e2 100644
+--- a/src/Client.cpp
++++ b/src/Client.cpp
+@@ -821,8 +821,15 @@ void Client::RunTCP() {
+                 write_start.setnow();
+             }
+             reportstruct->packetLen = myWriten(mySocket, mSettings->mBuf, writelen, &reportstruct->writecnt);
+-            FAIL_errno(reportstruct->packetLen < (intmax_t)sizeof(struct TCP_burst_payload), "burst written",
+-                       mSettings);
++            if (reportstruct->packetLen < (intmax_t)sizeof(struct TCP_burst_payload)) {
++                // Peer gone: end via EndJob like the plain write path, not
++                // FAIL_errno (thread_stop skips EndJob and leaks the socket).
++                reportstruct->err_readwrite = WriteErrFatal;
++                reportstruct->packetLen = 0;
++                reportstruct->emptyreport = true;
++                WARN_errno(1, "burst written");
++                break;
++            }
+             if (isTcpWriteTimes(mSettings)) {
+                 now.setnow();
+                 reportstruct->write_time = now.subUsec(write_start);
+diff --git a/src/Listener.cpp b/src/Listener.cpp
+index 961753d..34c37f9 100644
+--- a/src/Listener.cpp
++++ b/src/Listener.cpp
+@@ -612,6 +612,9 @@ void Listener::Run() {
+                     }
+                     server->mFullDuplexReport = InitSumReport(server, server->mSock, true);
+                     listener_client_settings->mFullDuplexReport = server->mFullDuplexReport;
++                    // One close reference per thread, taken before either starts.
++                    IncrSumReportCloseRefCounter(server->mFullDuplexReport);
++                    IncrSumReportCloseRefCounter(server->mFullDuplexReport);
+ #if HAVE_THREAD_DEBUG
+                     thread_debug("FullDuplex report client=%p/%p server=%p/%p", (void *)listener_client_settings,
+                                  (void *)listener_client_settings->mFullDuplexReport, (void *)server,
+diff --git a/src/Reporter.c b/src/Reporter.c
+index 4c0ff60..0b04ce5 100644
+--- a/src/Reporter.c
++++ b/src/Reporter.c
+@@ -294,7 +294,10 @@ bool EndJob(struct ReportHeader *reporthdr, struct ReportStruct *finalpacket) {
+         // fullduplex_stop_barrier() still governs which of the two paired
+         // threads (forward/reverse, sharing one socket) does the actual
+         // socket close - unchanged from before.
+-        if (!fullduplex_stop_barrier(&report->FullDuplexReport->fullduplex_barrier)) {
++        // Server side has no barrier (see InitSumReport), so it returned 0 to
++        // both threads and nobody closed the socket. Last thread out closes.
++        bool use_barrier = !isServerReverse(report->FullDuplexReport->info.common);
++        if (use_barrier && !fullduplex_stop_barrier(&report->FullDuplexReport->fullduplex_barrier)) {
+             do_close = false;
+         }
+         // Whether the *SumReport itself* (and its embedded barrier
+@@ -320,9 +323,15 @@ bool EndJob(struct ReportHeader *reporthdr, struct ReportStruct *finalpacket) {
+         // already returned from their own fullduplex_stop_barrier() call,
+         // so the destroy below is safe regardless of which thread happens
+         // to get there first.
+-        if (DecrSumReportCloseRefCounter(report->FullDuplexReport) == 0) {
+-            struct Condition *tmp = &report->FullDuplexReport->fullduplex_barrier.await;
+-            Condition_Destroy(tmp);
++        bool last = (DecrSumReportCloseRefCounter(report->FullDuplexReport) == 0);
++        if (!use_barrier) {
++            do_close = last;
++        }
++        if (last) {
++            if (use_barrier) {
++                struct Condition *tmp = &report->FullDuplexReport->fullduplex_barrier.await;
++                Condition_Destroy(tmp);
++            }
+ #if HAVE_THREAD_DEBUG
+             thread_debug("Socket fullduplex close sock=%d", report->FullDuplexReport->info.common->socket);
+ #endif
+diff --git a/src/Reports.c b/src/Reports.c
+index 4d05df2..c6dd991 100644
+--- a/src/Reports.c
++++ b/src/Reports.c
+@@ -753,7 +753,9 @@ struct ReportHeader *InitIndividualReport(struct thread_Settings *inSettings) {
+     if (isFullDuplex(inSettings)) {
+         assert(inSettings->mFullDuplexReport != NULL);
+         IncrSumReportRefCounter(inSettings->mFullDuplexReport);
+-        IncrSumReportCloseRefCounter(inSettings->mFullDuplexReport);
++        // Server side: the Listener takes both references up front.
++        if (!isServerReverse(inSettings->mFullDuplexReport->info.common))
++            IncrSumReportCloseRefCounter(inSettings->mFullDuplexReport);
+         ireport->FullDuplexReport = inSettings->mFullDuplexReport;
+     }
+     // Copy common settings into the transfer report section

@@ -13,3 +13,10 @@ override_dh_auto_configure:
 	./configure --prefix=/usr
 
 override_dh_auto_test:
+
+execute_after_dh_install:
+	install -D -m 644 debian/iperf3.ufw debian/iperf3/etc/ufw/applications.d/iperf3
+
+override_dh_installsystemd:
+	dh_installsystemd
+	dh_installsystemd --name=iperf3-ufw

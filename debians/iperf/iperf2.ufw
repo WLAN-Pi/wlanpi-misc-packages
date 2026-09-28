@@ -1,0 +1,4 @@
+[iperf2]
+title=iperf2 server
+description=iperf2 bandwidth test server (TCP 5001, UDP 5002 when started)
+ports=5001/tcp|5002/udp
