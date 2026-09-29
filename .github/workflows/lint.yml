@@ -45,6 +45,9 @@ jobs:
       - name: Test package version bump
         run: tests/test-next-package-version.sh
 
+      - name: Test apt pins
+        run: tests/test-apt-pins.sh
+
   actionlint:
     name: actionlint
     runs-on: 'ubuntu-24.04-arm'
