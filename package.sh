@@ -3,7 +3,7 @@
 PARSED_ARGS=$(getopt -o cfhaj: --long clean,force-sync,help,all --long arch:,package:,distro: -- "$@")
 VALID_ARGS=$?
 
-SCRIPT_PATH="$(dirname "$(readlink -f "$0")")"
+SCRIPT_PATH="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
 LOG_PATH="${SCRIPT_PATH}/logs"
 COMMIT_MSG_FILE="${SCRIPT_PATH}/commit_msg.txt"
 
@@ -103,6 +103,38 @@ sanitize_version() {
     echo "$version"
 }
 
+# Versions are <upstream>+wlanpi-<N>; a rebuild of the same upstream bumps <N>.
+# The marker sits in the upstream part, like Debian's +dfsg, so it sorts above
+# Debian's rebuilds (+b1), NMUs (-1.1) and repacks (+dfsg) of the same
+# upstream. Older <upstream>-<M>wlanpi<N> versions switch over at -1.
+next_package_version() {
+    local current="$1" upstream="$2"
+    local epoch="" no_epoch="${current#*:}"
+    [[ "${current}" == *:* ]] && epoch="${current%%:*}:"
+    local current_upstream="${no_epoch%-*}" revision="${no_epoch##*-}"
+    local base="${current_upstream%+wlanpi}"
+    local next
+
+    if dpkg --compare-versions "${upstream}" lt "${base}"; then
+        log "error" "Upstream ${upstream} is older than last built ${base}" >&2
+        return 1
+    elif dpkg --compare-versions "${upstream}" eq "${base}" && [[ "${current_upstream}" == *+wlanpi ]]; then
+        if [[ ! "${revision}" =~ ^[0-9]+$ ]]; then
+            log "error" "Can't parse revision '${revision}' of ${current}" >&2
+            return 1
+        fi
+        next="${epoch}${upstream}+wlanpi-$((revision + 1))"
+    else
+        next="${epoch}${upstream}+wlanpi-1"
+    fi
+
+    if ! dpkg --compare-versions "${next}" gt "${current}"; then
+        log "error" "Next version ${next} is not above ${current}" >&2
+        return 1
+    fi
+    echo "${next}"
+}
+
 build_packages()
 {
     log "ok" "Syncing sbuild submodule"
@@ -179,6 +211,7 @@ build_packages()
                     # Extract just the upstream version (remove epoch and debian revision)
                     changelog_version_no_epoch=${changelog_version#*:}
                     upstream_version=${changelog_version_no_epoch%%-*}
+                    upstream_version=${upstream_version%+wlanpi}
                     log "info" "Using changelog version for ${package_name}: ${upstream_version}"
                 else
                     # Last resort: sanitize the ref itself
@@ -192,42 +225,24 @@ build_packages()
             package_version="${upstream_version}"
         fi
 
-        # Get upstream version. E.g. version 1.2.3-4wlanpi1 will be 1.2.3
         current_version="$(cd ${package_path}; dpkg-parsechangelog --show-field Version)"
-        current_version_no_epoch=${current_version#*:}
-        current_upstream_version=${current_version_no_epoch%%-*}
 
-        # Debian build version. E.g. 1.2.3-4wlanpi1 will be 4
-        current_deb_version=${current_version%wlanpi*}
-        current_deb_version=${current_deb_version#*-}
-  
         log "info" "upstream_version: ${upstream_version}"
         log "info" "package_version: ${package_version}"
-        log "info" "current_upstream_version: ${current_upstream_version}"
+        log "info" "current_version: ${current_version}"
 
-        deb_version="1"
-        if dpkg --compare-versions "${package_version}" eq "${current_upstream_version#*:}"; then
-            log "warn" "Upstream version is the same as last built. Incrementing debian build number."
-            deb_version=$((current_deb_version+1))
-        elif dpkg --compare-versions "${package_version}" lt "${current_upstream_version#*:}"; then
-            log "error" "Trying to build an old version of upstream source for ${package_name} (${package_version} < ${current_upstream_version#*:}). Please check the package_ref in ${package_name}.conf."
+        if ! full_package_version="$(next_package_version "${current_version}" "${package_version}")"; then
+            log "error" "Can't version ${package_name}. Please check the package_ref in ${package_name}.conf."
             package_error="1"
             continue
         fi
-        package_version="${package_version}-${deb_version}wlanpi1"
-
-        current_epoch=""
-        if [[ "${current_version}" == *":"* ]]; then
-            current_epoch="${current_version%%:*}:"
-        fi
-
-        full_package_version="${current_epoch}${package_version}"
+        package_version="${full_package_version#*:}"
 
         if [[ -n "${GITHUB_OUTPUT}" ]] && [[ -w "${GITHUB_OUTPUT}" ]]; then
             echo "package-version=${full_package_version}" >> $GITHUB_OUTPUT
-            # Epoch-less version for GitHub artifact names, which reject ':'
-            echo "artifact-version=${full_package_version#*:}" >> $GITHUB_OUTPUT
-            echo "deb-package=${package_name}_${full_package_version}_${BUILD_ARCH}.deb" >> $GITHUB_OUTPUT
+            # Epoch-less: GitHub artifact names reject ':' and .deb file names omit it
+            echo "artifact-version=${package_version}" >> $GITHUB_OUTPUT
+            echo "deb-package=${package_name}_${package_version}_${BUILD_ARCH}.deb" >> $GITHUB_OUTPUT
         else
             echo "GITHUB_OUTPUT is not set or not writable"
         fi
@@ -408,5 +423,8 @@ log()
     echo "$2"
 }
 
-process_options
-build_packages
+# Sourced by tests for its functions; only run when executed.
+if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
+    process_options
+    build_packages
+fi
