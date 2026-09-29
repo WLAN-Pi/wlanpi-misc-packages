@@ -1,0 +1,10 @@
+Explanation: Keep the WLAN Pi build of wavemon, even when Debian's version is
+Explanation: higher. Debian's build lacks the WLAN Pi patches, units and
+Explanation: config. Shipped by wlanpi-misc-packages.
+Package: wavemon
+Pin: release o=packagecloud.io/wlanpi/main
+Pin-Priority: 990
+
+Package: wavemon
+Pin: release o=packagecloud.io/wlanpi/dev
+Pin-Priority: 990
