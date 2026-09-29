@@ -108,7 +108,7 @@ sanitize_version() {
 # Debian's rebuilds (+b1), NMUs (-1.1) and repacks (+dfsg) of the same
 # upstream. Older <upstream>-<M>wlanpi<N> versions switch over at -1.
 next_package_version() {
-    local current="$1" upstream="$2"
+    local current="$1" upstream="${2%+wlanpi}"
     local epoch="" no_epoch="${current#*:}"
     [[ "${current}" == *:* ]] && epoch="${current%%:*}:"
     local current_upstream="${no_epoch%-*}" revision="${no_epoch##*-}"
@@ -210,8 +210,7 @@ build_packages()
                 if [ -n "$changelog_version" ]; then
                     # Extract just the upstream version (remove epoch and debian revision)
                     changelog_version_no_epoch=${changelog_version#*:}
-                    upstream_version=${changelog_version_no_epoch%%-*}
-                    upstream_version=${upstream_version%+wlanpi}
+                    upstream_version=${changelog_version_no_epoch%-*}
                     log "info" "Using changelog version for ${package_name}: ${upstream_version}"
                 else
                     # Last resort: sanitize the ref itself

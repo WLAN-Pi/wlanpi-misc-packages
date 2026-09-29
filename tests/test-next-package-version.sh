@@ -33,6 +33,9 @@ expect "3.21+wlanpi-2" "3.22" "3.22+wlanpi-1"
 expect "2:2.12+wlanpi-1" "2.12" "2:2.12+wlanpi-2"
 expect "2:2.12+wlanpi-1" "2.13" "2:2.13+wlanpi-1"
 expect "1.0-rc1+wlanpi-1" "1.0-rc1" "1.0-rc1+wlanpi-2"
+# Upstream read back from our own changelog still carries the marker
+expect "3.21+wlanpi-1" "3.21+wlanpi" "3.21+wlanpi-2"
+expect "1.0-rc1+wlanpi-2" "1.0-rc1+wlanpi" "1.0-rc1+wlanpi-3"
 # Switch-over from the old <M>wlanpi<N> format
 expect "3.21-2wlanpi1" "3.21" "3.21+wlanpi-1"
 expect "2:2.12-3wlanpi1" "2.12" "2:2.12+wlanpi-1"
